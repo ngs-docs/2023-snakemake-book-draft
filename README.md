@@ -1,5 +1,7 @@
 # 2023-snakemake-book-draft
 
+[![DOI](https://zenodo.org/badge/591690273.svg)](https://zenodo.org/badge/latestdoi/591690273)
+
 A DRAFT, early stage book on, like, snakemake and things.
 
 Contact: Titus Brown, ctbrown@ucdavis.edu.
