@@ -8,35 +8,7 @@ We can tell snakemake to reuse filenames by using `{input}` and `{output}`. The 
 
 Let's give it a try!
 ```python
-rule sketch_genomes:
-    output:
-        "GCF_000017325.1.fna.gz.sig",
-        "GCF_000020225.1.fna.gz.sig",
-        "GCF_000021665.1.fna.gz.sig"
-    shell: """
-        sourmash sketch dna -p k=31 genomes/*.fna.gz --name-from-first
-    """
-
-rule compare_genomes:
-    input:
-        "GCF_000017325.1.fna.gz.sig",
-        "GCF_000020225.1.fna.gz.sig",
-        "GCF_000021665.1.fna.gz.sig"
-    output:
-        "compare.mat"
-    shell: """
-        sourmash compare {input} -o {output}
-    """
-
-rule plot_comparison:
-    message: "compare all input genomes using sourmash"
-    input:
-        "compare.mat"
-    output:
-        "compare.mat.matrix.png"
-    shell: """
-        sourmash plot {input}
-    """
+{{#include ../code/section1/simple6.snakefile}}
 ```
 
 This approach not only involves less typing in the first place, but also makes it so that you only have to edit filenames in one place. This avoids mistakes caused by adding or changing filenames in one place and not another place - a mistake I've made plenty of times!
@@ -59,36 +31,7 @@ snakemake -j 1 plot_comparison
 Suppose you add a new file that does not exist to `compare_genomes`:
 
 ```python
-rule sketch_genomes:
-    output:
-        "GCF_000017325.1.fna.gz.sig",
-        "GCF_000020225.1.fna.gz.sig",
-        "GCF_000021665.1.fna.gz.sig"
-    shell: """
-        sourmash sketch dna -p k=31 genomes/*.fna.gz --name-from-first
-    """
-
-rule compare_genomes:
-    input:
-        "GCF_000017325.1.fna.gz.sig",
-        "GCF_000020225.1.fna.gz.sig",
-        "GCF_000021665.1.fna.gz.sig",
-        "does-not-exist.sig"
-    output:
-        "compare.mat"
-    shell: """
-        sourmash compare {input} GCF_000021665.1.sig -o {output}
-    """
-
-rule plot_comparison:
-    message: "compare all input genomes using sourmash"
-    input:
-        "compare.mat"
-    output:
-        "compare.mat.matrix.png"
-    shell: """
-        sourmash plot {input}
-    """
+{{#include ../code/section1/simple7.snakefile}}
 ```
 
 Here, `does-not-exist.sig` doesn't exist, and we haven't given snakemake a rule to make it, either. What will snakemake do??
