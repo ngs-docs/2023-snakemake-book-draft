@@ -1,5 +1,7 @@
 # Summary
 
+- [Introduction](./intro.md)
+
 - [Section 1 - A Stepwise Introduction to Snakemake](./chapter_0.md)
   - [Chapter 1 - snakemake runs programs for you!](./chapter_1.md)
   - [Chapter 2 - snakemake connects rules for you!](./chapter_2.md)
