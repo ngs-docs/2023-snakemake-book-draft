@@ -7,8 +7,6 @@ rule sketch_genome:
         sourmash sketch dna -p k=31 {input} --name-from-first
     """
 
-# ANCHOR: thing
-
 rule compare_genomes:
     input:
         "GCF_000017325.1.fna.gz.sig",
@@ -20,8 +18,6 @@ rule compare_genomes:
     shell: """
         sourmash compare {input} -o {output}
     """
-
-# ANCHOR_END: thing
 
 rule plot_comparison:
     message: "compare all input genomes using sourmash"

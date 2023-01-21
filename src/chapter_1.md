@@ -6,17 +6,7 @@ Bioinformatics often involves running many different programs to characterize an
 
 Here's a simple, useful snakemake workflow:
 ```python
-rule compare_genomes:
-    message: "compare all input genomes using sourmash"
-    shell: """
-        sourmash sketch dna -p k=31 genomes/*.fna.gz --name-from-first 
- 
-        sourmash compare GCF_000021665.1.fna.gz.sig \
-            GCF_000017325.1.fna.gz.sig GCF_000020225.1.fna.gz.sig \
-            -o compare.mat
- 
-        sourmash plot compare.mat
-    """
+{{#include ../code/section1/simple1.snakefile}}
 ```
 Put it in a file called `Snakefile`, and run it with `snakemake -j 1`.
 
@@ -52,20 +42,7 @@ How do you get snakemake to avoid rerunning rules?
 
 We can do that by telling snakemake what we expect the output to be by adding an `output:` block in front of the shell block:
 ```python
-rule compare_genomes:
-    message: "compare all input genomes using sourmash"
-    output:
-        "compare.mat.matrix.png"
-    shell: """
-        sourmash sketch dna -p k=31 genomes/*.fna.gz --name-from-first
-
-        sourmash compare GCF_000021665.1.fna.gz.sig \
-            GCF_000017325.1.fna.gz.sig GCF_000020225.1.fna.gz.sig \
-            -o compare.mat
-
-        sourmash plot compare.mat
-    """
-
+{{#include ../code/section1/simple2.snakefile}}
 ```
 and now when we run `snakemake -j 1` once, it will run the commands; but when we run it again, it will say, "Nothing to be done (all requested files are present and up to date)."
 
@@ -91,25 +68,7 @@ If we want to avoid re-creating the files that already exist, we need to make th
 
 First, let's break out the commands into three separate rules.
 ```python
-rule sketch_genomes:
-    shell: """
-        sourmash sketch dna -p k=31 genomes/*.fna.gz --name-from-first
-    """
-
-rule compare_genomes:
-    shell: """
-        sourmash compare GCF_000021665.1.fna.gz.sig \
-            GCF_000017325.1.fna.gz.sig GCF_000020225.1.fna.gz.sig \
-            -o compare.mat
-    """
-
-rule plot_comparison:
-    message: "compare all input genomes using sourmash"
-    output:
-        "compare.mat.matrix.png"
-    shell: """
-        sourmash plot compare.mat
-    """
+{{#include ../code/section1/simple3.snakefile}}
 ```
 
 We didn't do anything too complicated here - we made two new rule blocks, with their own names, and split the shell commands up so that each shell command has its own rule block.
@@ -132,34 +91,10 @@ where the output needs to be updated (e.g. because it doesn't exist).
 Let's do that:
 
 ```python
-rule sketch_genomes:
-    output:
-        "GCF_000017325.1.fna.gz.sig",
-        "GCF_000020225.1.fna.gz.sig",
-        "GCF_000021665.1.fna.gz.sig"
-    shell: """
-        sourmash sketch dna -p k=31 genomes/*.fna.gz --name-from-first
-    """
-
-rule compare_genomes:
-    output:
-        "compare.mat"
-    shell: """
-        sourmash compare GCF_000021665.1.fna.gz.sig \
-            GCF_000017325.1.fna.gz.sig GCF_000020225.1.fna.gz.sig \
-            -o compare.mat
-    """
-
-rule plot_comparison:
-    message: "compare all input genomes using sourmash"
-    output:
-        "compare.mat.matrix.png"
-    shell: """
-        sourmash plot compare.mat
-    """
+{{#include ../code/section1/simple4.snakefile}}
 ```
 and now
-```
+```shell
 snakemake -j 1 sketch_genomes compare_genomes plot_comparison
 ```
 will run each command only once, as long as the output files are still there. Huzzah!

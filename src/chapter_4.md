@@ -7,19 +7,7 @@ Let's take a look at the `sketch_genomes` rule from the last
 in there!)
 
 ```python
-rule sketch_genomes:
-    input:
-        "genomes/GCF_000017325.1.fna.gz",
-        "genomes/GCF_000020225.1.fna.gz",
-        "genomes/GCF_000021665.1.fna.gz",
-    output:
-        "GCF_000017325.1.fna.gz.sig",
-        "GCF_000020225.1.fna.gz.sig",
-        "GCF_000021665.1.fna.gz.sig"
-    shell: """
-        sourmash sketch dna -p k=31 {input} \
-            --name-from-first
-    """
+{{#include ../code/section2/interm1.snakefile}}
 ```
 
 This command works fine as it is, but it is _slightly_ awkward - because,
@@ -45,38 +33,10 @@ we do have a simple option!
 Let's start by breaking this one rule into three _separate_ rules:
 
 ```python
-rule sketch_genomes_1:
-    input:
-        "genomes/GCF_000017325.1.fna.gz",
-    output:
-        "GCF_000017325.1.fna.gz.sig",
-    shell: """
-        sourmash sketch dna -p k=31 {input} \
-            --name-from-first
-    """
-
-rule sketch_genomes_2:
-    input:
-        "genomes/GCF_000020225.1.fna.gz",
-    output:
-        "GCF_000020225.1.fna.gz.sig",
-    shell: """
-        sourmash sketch dna -p k=31 {input} \
-            --name-from-first
-    """
-
-rule sketch_genomes_3:
-    input:
-        "genomes/GCF_000021665.1.fna.gz",
-    output:
-        "GCF_000021665.1.fna.gz.sig"
-    shell: """
-        sourmash sketch dna -p k=31 {input} \
-            --name-from-first
-    """
-    
-# rest of Snakefile here!
+{{#include ../code/section2/interm2.snakefile}}
 ```
+
+@CTB only include certain lines
 
 It's wordy, but it will work - run:
 
