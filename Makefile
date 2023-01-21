@@ -6,7 +6,7 @@ build: .PHONY
 serve: .PHONY
 	mdbook serve --open
 
-sync: .PHONY
+sync: build .PHONY
 	./farm-sync.sh
 
 .PHONY:
