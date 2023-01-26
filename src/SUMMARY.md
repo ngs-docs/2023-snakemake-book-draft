@@ -16,3 +16,16 @@
   - [Chapter 9 - using `expand` to make filenames](./chapter_9.md)
   - [Chapter 10 - using default rules](./chapter_10.md)
   - [Chapter 11 - our final Snakefile - review and discussion](./chapter_11.md)
+  
+- [Section 3 - Beyond Your First Snakefile](./section_3.md)
+
+- [Section 4 - Snakemake Patterns and Recipes](./section_4.md)
+  - [Subsampling](./recipes/subsampling-files.md)
+  - [Using `split` to split up files](./recipes/splitting-files.md)
+  - [Applying one rule to to many files - replacing `for` loops in shell scripts](./recipes/replacing-for.md)
+  - [Never fail me - how to make shell commands always succeed](./recipes/never-fail-me.md)
+
+- [Section 5 - Advanced Features](./section_5.md)
+
+- [Section 5 - A Reference Guide for Snakemake Features](./section_6.md)
+  - [Wildcard constraints](reference/wildcard-constraints.md)
