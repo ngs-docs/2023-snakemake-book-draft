@@ -9,4 +9,7 @@ serve: .PHONY
 sync: build .PHONY
 	./farm-sync.sh
 
+gh-pages: .PHONY
+	./deploy.sh
+
 .PHONY:
