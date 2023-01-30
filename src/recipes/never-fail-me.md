@@ -69,11 +69,12 @@ This is a bit dangerous - if the shell command fails, you won't know
 except by reading the error message - but it's sometimes necessary!
 
 Here's a simple snakemake example that demonstrates this approach by
-running a command that will always fail, because the script doesn't
-exist!
+trying to execute a script that doesn't exit! That command will always
+fail, but the overall shell block will succeed anyway because we
+use `|| true`:
 
 ```python
-{{#include ../code/misc/never-fail-me.snakefile}}
+{{#include ../../code/misc/never-fail-me/never-fail-me.snakefile}}
 ```
 
 (It also shows the peril of this approach, because this is probably a command
