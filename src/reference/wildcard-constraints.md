@@ -1,36 +1,76 @@
+# Limiting wildcard matching with wildcard constraints
 
-CTB: in progress
+Wildcards are one of the most powerful features in snakemake. But sometimes
+they cause trouble by matching too broadly, to too many files!
 
-Link to snakemake official documentation on wildcard constraints: 
-https://snakemake.readthedocs.io/en/stable/tutorial/additional_features.html#constraining-wildcards
+(CTB: point to wildcards section)
 
-Link to Python "friendly" regexp documentation: https://docs.python.org/3/howto/regex.html
+snakemake supports limiting wildcard matching with a feature called
+[wildcard constraints](https://snakemake.readthedocs.io/en/stable/tutorial/additional_features.html#constraining-wildcards). Wildcard constraints are
+a flexible system for specifying what a particular wildcard can, and cannot,
+match using regular expressions.
 
-You can use wildcard constraints with all wildcards to avoid matching too much.
+```admonish info title="Regular expressions"
+
+Regular expressions (commonly abbreviated "regexes" or "regexps") are a
+mini-language for flexible string matching.
+
+CTB: more here
+
+Python comes with a friendly introduction to regexps that is a good
+reference for more advanced use of regular expressions: see the
+[Regular Expression HOWTO](https://docs.python.org/3/howto/regex.html).
+```
+
+TODO:
 
 * use in wildcards in rules
 * use for glob_wildcards
 * where else?
+* named wildcards
 
 ## Using wildcard constraints in glob_wildcards
 
-Suppose you have two files, `letters-only-abc.txt` and `letters-only-abc2.txt`,
-and you only want to match the first pattern with `glob_wildcards`. You can
-specify a constraint as below that only matches letters, not numbers:
+Let's start by looking at using wildcard constraints with
+`glob_wildcards`.
+Consider a directory containing the following files:
+```
+letters-only-abc-xyz.txt
+letters-only-abc.txt
+letters-only-abc2.txt
+```
+We could match all three files easily enough with:
+```
+files, = glob_wildcards('letters-only-{word}.txt')
+```
+which would give us `['abc2', 'abc-xyz', 'abc']`.
 
+Now
+suppose we only want our wildcard pattern to match `letters-only-abc.txt`,
+but not the other files. How do we do this?
+
+We can specify a constraint as below that only matches letters, not
+numbers:
 ```python
 {{#include ../../code/misc/wildcards/wildcards.snakefile:letters-only}}
 ```
+and the `letters_only` list will be `['abc']`
 
-You can also specify characters to avoid, as opposed to characters that are
-allowed, using the regexp `^` (NOT) character -
+We can also specify characters to avoid, as opposed to characters that are
+allowed, using the regexp `^` (NOT) character - this will match a broader
+range of files than the previous example, but will still ignore words with
+numbers in them:
+```python
+{{#include ../../code/misc/wildcards/wildcards.snakefile:letters-only-2}}
+```
+Here, `letters_only` will be `['abc-xyz', 'abc']`, because we are allowing
+anything _but_ numbers.
 
-XXX
-
-This is particularly useful when you want to avoid matching in subdirectories.
-By default, `glob_wildcards` will include files in subdirectories - for
-example, if there is a file `data/datafile.txt`, then `all_txt_files` below
-would list `data/datafile.txt`:
+Avoiding certain characters is particularly useful when we want to
+avoid matching in subdirectories.  By default, `glob_wildcards` will
+include files in subdirectories - for example, if there is a file
+`data/datafile.txt`, then `all_txt_files` below would list
+`data/datafile.txt`:
 
 ```python
 {{#include ../../code/misc/wildcards/wildcards.snakefile:all-txt}}
