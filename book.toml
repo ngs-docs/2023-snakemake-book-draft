@@ -17,6 +17,8 @@ on_failure = "bail"
 [output.html]
 additional-css = ["./extra/mdbook-admonish.css"]
 
+[output.linkcheck]
+
 [preprocessor.cmdrun]
 
 [build]
