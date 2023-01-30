@@ -41,17 +41,32 @@ The commands will run every time you invoke snakemake with `snakemake -j 1`. But
 How do you get snakemake to avoid rerunning rules?
 
 We can do that by telling snakemake what we expect the output to be by adding an `output:` block in front of the shell block:
-```python
-{{#include ../code/section1/simple2.snakefile}}
+```diff
+<!-- cmdrun ../diff-trunc.py ../code/section1/simple1.snakefile ../code/section1/simple2.snakefile -->
 ```
 and now when we run `snakemake -j 1` once, it will run the commands; but when we run it again, it will say, "Nothing to be done (all requested files are present and up to date)."
+
+```admonish info title='How should we read code examples?'
+The code example above looks a little odd - it's got '+' in front of a
+two lines, and they're colored green. What gives?
+
+This is an example of a "diff", a line-by-line comparison of two
+source code files produced by the `diff` program. Here, the diff
+shows that we've added two lines to the original code listing - the two
+lines beginning with '+'. It also adds some context above and below the
+added lines so that you can more easily see where they are added to the
+original code.
+
+Below, we'll also show examples using removed lines, which will be
+identified with a '-' in the first position and highlighted in red.
+```
 
 This is because the desired output file, `compare.mat.matrix.png`, already exists. So snakemake knows it doesn't need to do anything!
 
 If you remove `compare.mat.matrix.png` and run `snakemake -j 1` again, snakemake will happily make the files again:
 ```shell
-rm compare.mat.matrix.png
-snakemake -j 1
+$ rm compare.mat.matrix.png
+$ snakemake -j 1
 ```
 
 So snakemake makes it easy to avoid re-running a set of commands if it
