@@ -6,7 +6,7 @@ program. The value `0` (zero) indicates success, while any non-zero
 value indicates error.
 
 
-```admonish info title='How should we interpret UNIX exit codes?'
+~~~admonish info title='How should we interpret UNIX exit codes?'
 
 The UNIX "exit code" or "exit status" is a single number returned from
 an exiting subprocess to the calling program. This is the way that a
@@ -20,11 +20,17 @@ standardized by the GNU libc library on which many programs are built
 
 In the bash shell for UNIX, the exit status from the previous command is
 stored in the `$?` variable and you can evaluate it like so:
-`$ if [ $? -eq 0 ] ...`
+```shell
+$ if [ $? -eq 0 ] ...
+```
 or you can use `&&` to only run a second command if the first command "succeeds" (exits with code 0):
-`$ program && echo success`
+```shell
+$ program && echo success
+```
 and `||` to only run a second command if the first command fails (exits with a non-zero exit code):
-`$ program || echo failed`
+```shell
+$ program || echo failed
+```
 
 Why does zero indicate success? We haven't been able to track down an answer,
 but if we had to guess, it's because 0 is a good singular value that stands
@@ -34,7 +40,7 @@ To read more, see
 [the Wikipedia entry on Exit status](https://en.wikipedia.org/wiki/Exit_status)
 as well as the
 [GNU libc manual section](https://www.gnu.org/software/libc/manual/html_node/Exit-Status.html).
-```
+~~~
 
 Sometimes your shell commands will _need_ to fail, because of the way they
 are constructed. For example, if you are using piping to truncate the
