@@ -59,13 +59,17 @@ Thought experiment: consider a wildcard in input that is unused in output.
 
 ## Some examples of wildcards
 
+### Running one rule on many files
 
-### Renaming files
+handcoding list of files
+
+### Renaming files using a single wildcard
+
+glob_wildcards
+
+### Renaming files using multiple wildcards
 
 https://snakemake.readthedocs.io/en/stable/project_info/faq.html#i-don-t-want-expand-to-use-the-product-of-every-wildcard-what-can-i-do
-
-* renaming files
-
 
 
 ```
@@ -73,18 +77,15 @@ F3D141_S207_L001_R1_001.fastq
 F3D141_S207_L001_R2_001.fastq
 ```
 
-
 ```python
-rule rename:
-    input:
-        "{sample}_L001_{r}_001.fastq",
-    output:
-        "{sample}_{r}.fastq"
+{{#include ../../code/examples/wildcards.renaming/Snakefile}}
 ```
 
-* mixing/matching strings
+note: includes files in subdirectories!
 
-* constraining wildcards to avoid (e.g.) subdirectories
+### mixing/matching strings
+
+### constraining wildcards to avoid (e.g.) subdirectories
 
 Mention:
 
