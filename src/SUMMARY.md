@@ -18,6 +18,7 @@
   - [Chapter 11 - our final Snakefile - review and discussion](./chapter_11.md)
   
 - [Section 3 - Beyond Your First Snakefile](./section_3.md)
+  - [Using wildcards to generalize your rules](./beginner+/wildcards.md)
 
 - [Section 4 - Snakemake Patterns and Recipes](./section_4.md)
   - [Subsampling](./recipes/subsampling-files.md)

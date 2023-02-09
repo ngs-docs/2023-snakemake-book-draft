@@ -1,0 +1,16 @@
+files = glob_wildcards("original/{sample}_L001_{r}_001.fastq")
+
+rule all:
+    input:
+        expand("renamed/{sample}_{r}.fastq", zip,
+               sample=files.sample, r=files.r)
+
+rule rename:
+    message:
+        "rename {wildcards.sample} / {wildcards.r}!"
+    input:
+        "original/{sample}_L001_{r}_001.fastq",
+    output:
+        "renamed/{sample}_{r}.fastq"
+    shell:
+        "cp {input} {output}"
