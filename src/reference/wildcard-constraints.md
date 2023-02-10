@@ -3,7 +3,10 @@
 Wildcards are one of the most powerful features in snakemake. But sometimes
 they cause trouble by matching too broadly, to too many files!
 
-(CTB: point to wildcards section)
+See the [section on wildcards](../beginner+/wildcards.md) for an introduction
+to wildcards!
+
+CTB: add section here about named wildcard constraints.
 
 snakemake supports limiting wildcard matching with a feature called
 [wildcard constraints](https://snakemake.readthedocs.io/en/stable/tutorial/additional_features.html#constraining-wildcards). Wildcard constraints are
@@ -15,7 +18,7 @@ match using regular expressions.
 Regular expressions (commonly abbreviated "regexes" or "regexps") are a
 mini-language for flexible string matching.
 
-CTB: more here
+CTB: more here; give a few useful/common examples. \d+, alpha-numeric words, ??
 
 Python comes with a friendly introduction to regexps that is a good
 reference for more advanced use of regular expressions: see the
@@ -86,3 +89,18 @@ then files in subdirectories will not be matched:
 ## Using wildcard constraints in rules
 
 * only need in first place wildcard is mentioned
+
+## Global wildcard constraints
+
+snakemake supports _global_ wildcard constraints like so:
+
+```python
+wildcard_constraints:
+    sample="\w+" # equivalent to {sample,\w+} - limits to alphabet letters
+    num="[0-9]+" # equivalent to {num,[0-9]+} - limit to numbers
+```
+
+Anywhere where `sample` or `num` is used in the Snakefile, these
+constraints will be applied.
+
+<!-- CTB: check, can they be overridden locally? -->
