@@ -1,7 +1,7 @@
 all: build
 
 build: .PHONY
-	mdbook build
+	mdbook build -d book
 
 serve: .PHONY
 	mdbook serve --open
