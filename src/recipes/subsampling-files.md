@@ -1,6 +1,6 @@
 # Subsampling FASTQ files
 
-In [Using wildcards to generalize your rules](./beginner+/wildcards.md),
+In [Using wildcards to generalize your rules](../beginner+/wildcards.md),
 we introduced the use of wildcards to generate 
 
 ```python
