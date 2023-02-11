@@ -1,0 +1,14 @@
+rule all:
+    input:
+        "big.subset25.fastq"
+
+rule subset:
+    input:
+        "big.fastq"
+    output:
+        "big.subset{num_lines}.fastq"
+    params:
+        num_records = lambda wildcards: wildcards.num_lines // 4
+    shell: """
+        head -{params.num_records} {input} > {output}
+    """
