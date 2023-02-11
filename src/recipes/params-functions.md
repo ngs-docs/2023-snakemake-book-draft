@@ -1,5 +1,7 @@
 # Subsetting FASTQ files to a fixed number of records.
 
+Level: intermediate
+
 In [the subsampling files recipe](./subsampling-files.md), we
 showed how to output a file with a specific number of lines in it
 based only on the output filename. What if we want to sample a
