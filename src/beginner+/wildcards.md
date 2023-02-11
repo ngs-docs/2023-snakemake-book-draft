@@ -1,8 +1,5 @@
 # Using wildcards to generalize your rules
 
-
-[snakemake wildcard docs](https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#snakefiles-wildcards)
-
 As we showed in [Chapter 6](../chapter_6.md), when you have repeated
 substrings between input and output, you can extract them into
 wildcards - going from
@@ -32,16 +29,19 @@ rule sketch_genomes_1:
     """
 ```
 
-In this simple (and very common!) use case, wildcards act very
-straightforward: snakemake uses pattern matching to see whether, when
+Here, `{accession}` is a wildcard that "fills in" as needed for any filename
+that is in the `genomes/` directory and ends with `.fna.gz`.
+
+In this simple (and very common!) use case for wildcards,
+snakemake uses pattern matching to see whether, when
 missing a desired output (here a filename ending in `.fna.gz.sig`),
 there is a corresponding input file; and if so, it runs the associated
-shell command.
+shell command, filling in the filename wherever `{accession}` is provided.
 
 This is incredibly useful and means that in many cases you can write
 a single rule that is applied to hundreds or thousands of files!
 
-As usual, however, there are a lot of subleties to consider. In this
+However, there are a lot of subleties to consider. In this
 chapter, we're going to cover the most important of those subtleties, and
 provide links where you can learn more.
 
@@ -50,8 +50,8 @@ provide links where you can learn more.
 ### Wildcards are local to each rule
 
 Wildcard names only match _within_ a rule block. You can use the same
-wildcard names in multiple rules for consistency, but snakemake
-doesn't pay attention to them.
+wildcard names in multiple rules for consistency, but snakemake won't
+treat them any differently based on their shared name.
 
 So, for example, this:
 
@@ -112,8 +112,8 @@ rule analyze_this:
 
 Here you will get "unknown variable a" @@CTB.
 
-To refer to `{a}` here, you need to use the `wildcards.` prefix to 
-refer to the `wildcards` namespace:
+To refer to `{a}` here, you need to use `wildcards.a` in
+the shell block:
 
 ```python
 rule analyze_this:
@@ -122,31 +122,17 @@ rule analyze_this:
     shell: "analyze {input} -o {output} --title {wildcards.a}
 ```
 
-Note that the `wildcards` namespace is only available within a rule -
+Note that the `wildcards` namespace is only available _within_ a rule -
 that's because wildcards only exist within individual rules, and wildcards
-are not shared across rules.
+are not shared across rules!
 
-### All wildcards in the `output:` must match to wildcards in `input:`
-
-(CTB: this is not entirely true, consider params etc.)
+### All wildcards used in a rule must match to wildcards in the `output:` block
 
 snakemake uses the wildcards in the `output:` block to fill in the wildcards
-in the `input:` block, so they have to match across these two blocks.
+elsewhere in the rule, so they have to match across the blocks.
 
-This means that you can't use a wildcard in the output block that
-isn't in the input block:
-
-```python
-# this does not work:
-
-rule analyze_sample_2:
-    input: "{sample}.in"
-    output: "{sample}.x.{analysis}.out"
-```
-because snakemake doesn't know what value to fill in for `analysis`.
-
-You also can't have a wildcard in the input block that isn't in the
-output block:
+So, for example, every wildcard in the `input:` block needs to be used
+in `output:`.  Consider:
 
 ```python
 # this does not work:
@@ -158,15 +144,19 @@ rule analyze_sample:
 because snakemake doesn't know how to fill in the `analysis` wildcard in
 the _input_ block.
 
-You can think about this second situation in this way: if this worked,
-there would be multiple different input files that yield the same
-output, and snakemake would have no way to choose which input file to
-use.
+Think about it this way: if this worked, there would be multiple
+different input files for the same output, and snakemake would
+have no way to choose which input file to use.
+
+There are situations where wildcards in the `output:` block do _not_ need
+to be in the `input:` block, however - see section CTBXXX below on
+using wildcards to determine parameters for the shell block.
 
 ### Wildcards match greedily, unless constrained
 
-Wildcard pattern matching chooses the _longest possible_ match, which
-can sometimes cause problems. (CTB: example? Probably prefix/suffix.)
+Wildcard pattern matching chooses the _longest possible_ match to
+_any_ characters, which can sometimes cause problems. (CTB: example?
+Probably prefix/suffix...)
 
 CTB fixme, from snakemake docs:
 >Multiple wildcards in one filename can cause ambiguity. 
@@ -213,6 +203,27 @@ note: includes files in subdirectories!
 
 ### constraining wildcards to avoid (e.g.) subdirectories
 
+### Using wildcards to determine parameters to use in the shell block.
+
+You can also use wildcards to build rules that produce output files
+where the contents are based on the filename; for example, consider
+this example of how to generate a subset of a FASTQ file:
+
+```python
+{{#include ../../code/examples/wildcards.subset/Snakefile}}
+```
+
+Here, the wildcard is _only_ in the output filename, not in the
+input filename. The wildcard value is used by snakemake to determine
+how to fill in the number of lines for `head` to select from the file!
+
+This can be really useful for generating files with many different
+parameters to a particular shell command - "parameter sweeps". See CTB XXX.
+
+CTB link to:
+* params functions, params lambda?
+* parameter sweeps with this and expand
+
 ## CTB: More things to discuss
 
 Mention:
@@ -220,3 +231,8 @@ Mention:
 * here, snakemake is constructing strings to run, that is all.
 * simple renaming foo
 * pair vs metagenome/genome - jean setup.
+
+## Additional references
+
+See also:
+* the [snakemake docs on wildcards](https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#snakefiles-wildcards)

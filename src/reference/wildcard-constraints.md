@@ -6,7 +6,10 @@ they cause trouble by matching too broadly, to too many files!
 See the [section on wildcards](../beginner+/wildcards.md) for an introduction
 to wildcards!
 
-CTB: add section here about named wildcard constraints.
+By default, wildcards in snakemake match to one or more characters -
+that is, they won't match to an empty string, but they'll match to
+_anything else_. As discussed in the wildcards chapter, this can
+cause problems!
 
 snakemake supports limiting wildcard matching with a feature called
 [wildcard constraints](https://snakemake.readthedocs.io/en/stable/tutorial/additional_features.html#constraining-wildcards). Wildcard constraints are

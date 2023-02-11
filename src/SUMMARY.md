@@ -21,10 +21,11 @@
   - [Using wildcards to generalize your rules](./beginner+/wildcards.md)
 
 - [Section 4 - Snakemake Patterns and Recipes](./section_4.md)
-  - [Subsampling](./recipes/subsampling-files.md)
+  - [Subsampling FASTQ files](./recipes/subsampling-files.md)
   - [Using `split` to split up files](./recipes/splitting-files.md)
   - [Applying one rule to to many files - replacing `for` loops in shell scripts](./recipes/replacing-for.md)
   - [Never fail me - how to make shell commands always succeed](./recipes/never-fail-me.md)
+  - [Subsetting FASTQ files to a fixed number of records](./recipes/params-functions.md)
 
 - [Section 5 - Advanced Features](./section_5.md)
 
