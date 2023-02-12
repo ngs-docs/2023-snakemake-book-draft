@@ -201,7 +201,7 @@ note: includes files in subdirectories!
 
 ### mixing/matching strings
 
-### constraining wildcards to avoid (e.g.) subdirectories
+### constraining wildcards to avoid (e.g.) subdirectories, periods
 
 ### Using wildcards to determine parameters to use in the shell block.
 

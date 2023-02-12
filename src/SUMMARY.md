@@ -19,6 +19,11 @@
   
 - [Section 3 - Beyond Your First Snakefile](./section_3.md)
   - [Using wildcards to generalize your rules](./beginner+/wildcards.md)
+  - [Using `expand` to generate filenames](./beginner+/expand.md))
+  - [Debugging snakemake workflows](./beginner+/debugging.md)
+  - [Basic syntax rules for Snakefiles](./beginner+/syntax.md)
+  - [Input and output blocks](./beginner+/input-and-output-blocks.md)
+  - [Visualizing your workflow](./beginner+/visualizing.md)
 
 - [Section 4 - Snakemake Patterns and Recipes](./section_4.md)
   - [Subsampling FASTQ files](./recipes/subsampling-files.md)
@@ -29,5 +34,13 @@
 
 - [Section 5 - Advanced Features](./section_5.md)
 
-- [Section 5 - A Reference Guide for Snakemake Features](./section_6.md)
+- [Section 6 - A Reference Guide for Snakemake Features](./section_6.md)
   - [Wildcard constraints](reference/wildcard-constraints.md)
+
+- [Appendix](appendix/index.md)
+  - [UNIX shell basics](appendix/unix-shell.md)
+  - [Getting started with `conda` and `mamba`](appendix/conda-and-mamba.md)
+  - [Git basics](appendix/git-basics.md)
+  - [UNIX and scripting: executing text files](appendix/shell-scripts.md)
+  - [Writing software that is workflow-friendly](appendix/workflow-friendly-software.md)
+  - [Python basics](appendix/python.md)
