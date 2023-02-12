@@ -33,6 +33,7 @@
   - [Subsetting FASTQ files to a fixed number of records](./recipes/params-functions.md)
 
 - [Section 5 - Advanced Features](./section_5.md)
+  - [Beyond `-j` - parallelizing snakemake](./advanced/parallel.md)
 
 - [Section 6 - A Reference Guide for Snakemake Features](./section_6.md)
   - [Wildcard constraints](reference/wildcard-constraints.md)
