@@ -61,8 +61,8 @@ rule analyze_this:
     output: "{a}.second.txt"
 
 rule analyze_that:
-    input: "{b}.second.txt"
-    output: "{b}.third.txt"
+    input: "{a}.second.txt"
+    output: "{a}.third.txt"
 ```
 
 is equivalent to:
