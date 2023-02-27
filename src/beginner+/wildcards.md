@@ -32,11 +32,10 @@ rule sketch_genomes_1:
 Here, `{accession}` is a wildcard that "fills in" as needed for any filename
 that is in the `genomes/` directory and ends with `.fna.gz`.
 
-In this simple (and very common!) use case for wildcards,
-snakemake uses pattern matching to see whether, when
-missing a desired output (here a filename ending in `.fna.gz.sig`),
-there is a corresponding input file; and if so, it runs the associated
-shell command, filling in the filename wherever `{accession}` is provided.
+Snakemake uses simple _pattern matching_ to determine the value of
+`{accession}` - if asked for a filename ending in `.fna.gz.sig`, snakemake
+takes the prefix, and then looks for the matching input file
+`genomes/{accession}.fna.gz`, and fills in `{input}` accordingly.
 
 This is incredibly useful and means that in many cases you can write
 a single rule that is applied to hundreds or thousands of files!
@@ -46,6 +45,34 @@ chapter, we're going to cover the most important of those subtleties, and
 provide links where you can learn more.
 
 ## Rules for wildcards
+
+### Wildcards are determined by the desired output
+
+The first and most important rule of wildcards is this: snakemake
+fills in wildcard values based on the filename it is asked to produce.
+
+Consider the following rule:
+
+```python
+{{#include ../../code/examples/wildcards.output/snakefile.output}}
+```
+The wildcard in the output block will match _any_ file that ends with
+`.a.out`, and the associated shell command will create it!  This is both
+powerful and constraining: you can create any file with the suffix
+`.a.out` - but you also need to _ask_ for the file to be created.
+
+This means that somewhere, in either the snakefile on or on the command line,
+you need to request a file that ends in `.a.out` in order for snakemake to
+fill in the wildcard. There's no other way for snakemake to guess at the
+value of the wildcard.
+
+Among other implications, this means that once you put a wildcard in a
+rule, you can no longer run that rule by the rule name - you have to
+ask for a filename, instead.  If you try to run a rule that contains a
+wildcard but don't tell it what filename you want to create, you'll get:
+```
+Target rules may not contain wildcards.
+```
 
 ### Wildcards are local to each rule
 
@@ -88,16 +115,16 @@ A good convention is to choose wildcards to have the same semantic
 meaning across the Snakefile - e.g. always use `sample` to mean the
 same thing. This makes reading the Snakefile easier!
 
-As a corollary, you can mix and match wildcards. @CTB. Draft text: Since
-snakemake is _just_ pattern matching to strings, you can have some rules that
-use wildcards to include patterns that are broken down into separate wildcards
-by other rules. See examples below.
+An interesting addendum: because wildcards are local to each rule, you
+are free to match different parts of patterns in different rules!
+See "Mixing and matching wildcards", below. (CTB)
 
 ### Wildcards are automatically available in `input:` and `output:` blocks, but not in other blocks.
     
 Within the `input:` and `output:` blocks in a rule, you can refer to
 wildcards directly by name. If you want to use wildcards in other
-parts of a rule you need to use the `wildcards.` prefix.
+parts of a rule you need to use the `wildcards.` prefix. Here,
+`wildcards` is a _namespace_, which we will talk about more later. (CTB)
 
 Consider this Snakefile:
 
@@ -107,19 +134,22 @@ Consider this Snakefile:
 rule analyze_this:
     input: "{a}.first.txt"
     output: "{a}.second.txt"
-    shell: "analyze {input} -o {output} --title {a}
+    shell: "analyze {input} -o {output} --title {a}"
 ```
 
-Here you will get "unknown variable a" @@CTB.
+Here you will get an error,
+```
+NameError: The name 'a' is unknown in this context. Did you mean 'wildcards.a'?
+```
 
-To refer to `{a}` here, you need to use `wildcards.a` in
-the shell block:
+As the error suggests, you need to use `wildcards.a` in
+the shell block instead:
 
 ```python
 rule analyze_this:
     input: "{a}.first.txt"
     output: "{a}.second.txt"
-    shell: "analyze {input} -o {output} --title {wildcards.a}
+    shell: "analyze {input} -o {output} --title {wildcards.a}"
 ```
 
 Note that the `wildcards` namespace is only available _within_ a rule -
@@ -178,26 +208,46 @@ section for more details!
 ### Running one rule on many files
 
 handcoding list of files
+fastqc or gzip?
+all files/all subdirectories
 
-### Renaming files using a single wildcard
+### Renaming files by prefix using `glob_wildcards`
 
-glob_wildcards
-
-### Renaming files using multiple wildcards
-
-https://snakemake.readthedocs.io/en/stable/project_info/faq.html#i-don-t-want-expand-to-use-the-product-of-every-wildcard-what-can-i-do
-
+Consider a set of files named like so:
 
 ```
 F3D141_S207_L001_R1_001.fastq
 F3D141_S207_L001_R2_001.fastq
 ```
+within the `original/` subdirectory.
+
+Now suppose you want to rename them all to get rid of the `_001` suffix
+before `.fastq`. This is very easy with wildcards!
+
+The below Snakefile uses `glob_wildcards` to load in a list of files from
+a directory and then make a copy of them with the new name under the
+`renamed/` subdirectory:
+
+```python
+{{#include ../../code/examples/wildcards.renaming_simple/Snakefile}}
+```
+
+Here you could do a `mv` instead of a `cp` and then the glob_wildcards would no longer pick
+up the changed files after running.
+
+### Renaming files using multiple wildcards
+
+
 
 ```python
 {{#include ../../code/examples/wildcards.renaming/Snakefile}}
 ```
 
 note: includes files in subdirectories!
+
+Links:
+
+* [snakemake documentation on using zip instead of product](https://snakemake.readthedocs.io/en/stable/project_info/faq.html#i-don-t-want-expand-to-use-the-product-of-every-wildcard-what-can-i-do)
 
 ### mixing/matching strings
 

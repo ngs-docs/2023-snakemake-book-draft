@@ -1,0 +1,4 @@
+rule analyze_this:
+    input: "{a}.first.txt"
+    output: "{a}.second.txt"
+    shell: "analyze {input} -o {output} --title {a}"

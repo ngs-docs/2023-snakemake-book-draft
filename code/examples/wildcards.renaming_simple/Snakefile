@@ -1,0 +1,16 @@
+# first, find matches to filenames of this form:
+files = glob_wildcards("original/{sample}_001.fastq")
+
+# next, specify the form of the name you want:
+rule all:
+    input:
+        expand("renamed/{sample}.fastq", sample=files.sample)
+
+# finally, give snakemake a recipe for going from inputs to outputs.
+rule rename:
+    input:
+        "original/{sample}_001.fastq",
+    output:
+        "renamed/{sample}.fastq"
+    shell:
+        "cp {input} {output}"
