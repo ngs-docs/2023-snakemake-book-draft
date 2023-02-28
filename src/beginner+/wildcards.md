@@ -196,6 +196,7 @@ _any_ characters, which can sometimes cause problems. (CTB: example?
 Probably prefix/suffix...)
 
 CTB fixme, from snakemake docs:
+
 >Multiple wildcards in one filename can cause ambiguity. 
 
 You can use
@@ -233,11 +234,11 @@ for more examples of this powerful pattern!
 That having been said, this Snakefile is inconvenient to write and is
 somewhat error prone - specifically,
 
-* writing out the list of files is annoying if you have many of them.
-* to generate the list of files, you have to hand-rename them. That's error
-  prone!
+* writing out the files individually is annoying if you have many of them!
+* to generate the list of files, you have to hand-rename them, which is
+  error prone!
   
-Snakemake has several features that can help with these issues! You
+Snakemake provides several features that can help with these issues. You
 can load the list of files from a text file or spreadsheet, or get the
 list directly from the directoriy using `glob_wildcards`; and you can
 use `expand` to rename them in bulk. Read on for some examples!
@@ -304,26 +305,31 @@ longer have to write out the list of files ourselves - we can let
 snakemake do it. `expand` is discussed further in
 [Using expand to generate filenames](expand.md).
 
-Note that here you could do a `mv` instead of a `cp` and then the
-glob_wildcards would no longer pick up the changed files after
+Note that here you could do a `mv` instead of a `cp` and then
+`glob_wildcards` would no longer pick up the changed files after
 running.
 
 This Snakefile does have the problem that it loads the list of files
 from the directory itself, which means that if an input file is
 accidentally deleted, snakemake won't complain. When renaming files,
-this is unlikely to cause problems; when running workflows, we recommend
-loading the list of samples from a text file or spreadsheet to avoid
-problems (CTB recipe).
+this is unlikely to cause problems; however, when running workflows,
+we recommend loading the list of samples from a text file or
+spreadsheet to avoid problems (CTB recipe).
 
 Also note that this Snakefile will find and rename all files
 in `original/` as well as any subdirectories! This is because
 `glob_wildcards` by default includes all subdirectories.
 
+### Constraining wildcards to avoid (e.g.) subdirectories and/or periods
+
+See [Wildcard constraints](../reference/wildcard-constraints.md) for more
+information and details.
+
+## Advanced wildcard examples
+
 ### Renaming files using multiple wildcards
 
-(Maybe move to advanced section?)
-
-The previous example works really well when you want to change just
+The first renaming example above works really well when you want to change just
 the suffix of a file and can use a single wildcard, but if you want to
 do more complicated renaming you have to use multiple wildcards.
 
@@ -359,8 +365,6 @@ Links:
 
 ### Mixing and matching strings
 
-(maybe moved to advanced section?)
-
 A somewhat nonintuitive (but also very useful) outcome of wildcards
 being local to rules is that you can do clever string matching.
 
@@ -368,7 +372,7 @@ Consider this Snakefile:
 
 (transfer to functional Snakefile)
 
-```
+```python
 rule all:
     input:
         "sample1.x.ecoli.bam",
@@ -390,23 +394,23 @@ rule convert_sam_to_bam:
 # CTB put in shell commands ;)
 ```
 
-Here, snakemake will hapilly use different wildcards, and match
-them to different parts of the pattern, in each rule.
+Here, snakemake is happily using different wildcards, and matching
+them to different parts of the pattern, in each rule!
 
-Rule `convert_sam_to_bam` will generically convert any SAM file to a BAM
+* Rule `convert_sam_to_bam` will generically convert any SAM file to a BAM
 file, regardless of any other details of its name.
 
-However, `map_reads_to_references` will only produce mapping files that...
-CTB
+* However, `map_reads_to_references` will only produce mapping files that
+match the pattern of `{sample}.x.{reference}`, which in turn depend on the
+existence of  `{reference}.fa` and `{sample}.fastq`.
 
-### Constraining wildcards to avoid (e.g.) subdirectories and/or periods
-
-See [Wildcard constraints](../reference/wildcard-constraints.md) for more
-information and details.
+This works because, ultimately, snakemake is simply matching strings
+and does not "know" anything about the structure of the strings that
+it's matching. And it also doesn't remember wildcards across rules. So
+snakemake will happily match one set of wildcards in one rule, and a
+different set of wildcards in another rule!
 
 ### Using wildcards to determine parameters to use in the shell block.
-
-(maybe move to advanced section?)
 
 You can also use wildcards to build rules that produce output files
 where the contents are based on the filename; for example, consider
@@ -427,7 +431,9 @@ CTB link to:
 * params functions, params lambda?
 * parameter sweeps with this and expand
 
-## CTB: More things to discuss
+## How to think about wildcards, and expand.
+
+Maybe a whole new section...
 
 Mention:
 
