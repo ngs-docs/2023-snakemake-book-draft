@@ -321,6 +321,8 @@ in `original/` as well as any subdirectories! This is because
 
 ### Renaming files using multiple wildcards
 
+(Maybe move to advanced section?)
+
 The previous example works really well when you want to change just
 the suffix of a file and can use a single wildcard, but if you want to
 do more complicated renaming you have to use multiple wildcards.
@@ -355,11 +357,56 @@ Links:
 
 * [snakemake documentation on using zip instead of product](https://snakemake.readthedocs.io/en/stable/project_info/faq.html#i-don-t-want-expand-to-use-the-product-of-every-wildcard-what-can-i-do)
 
-### mixing/matching strings
+### Mixing and matching strings
 
-### constraining wildcards to avoid (e.g.) subdirectories, periods
+(maybe moved to advanced section?)
+
+A somewhat nonintuitive (but also very useful) outcome of wildcards
+being local to rules is that you can do clever string matching.
+
+Consider this Snakefile:
+
+(transfer to functional Snakefile)
+
+```
+rule all:
+    input:
+        "sample1.x.ecoli.bam",
+        "sample2.x.shewanella.bam",
+        "sample1.x.shewanella.bam"
+
+rule map_reads_to_reference:
+    input:
+        reads="{sample}.fq",
+        reference="{genome}.fa",
+    output:
+        "{reads}.x.{reference}.sam"
+        
+rule convert_sam_to_bam:
+    input:
+        "{filename}.sam"
+    output:
+        "{filename}.bam"
+# CTB put in shell commands ;)
+```
+
+Here, snakemake will hapilly use different wildcards, and match
+them to different parts of the pattern, in each rule.
+
+Rule `convert_sam_to_bam` will generically convert any SAM file to a BAM
+file, regardless of any other details of its name.
+
+However, `map_reads_to_references` will only produce mapping files that...
+CTB
+
+### Constraining wildcards to avoid (e.g.) subdirectories and/or periods
+
+See [Wildcard constraints](../reference/wildcard-constraints.md) for more
+information and details.
 
 ### Using wildcards to determine parameters to use in the shell block.
+
+(maybe move to advanced section?)
 
 You can also use wildcards to build rules that produce output files
 where the contents are based on the filename; for example, consider
@@ -384,9 +431,7 @@ CTB link to:
 
 Mention:
 
-* here, snakemake is constructing strings to run, that is all.
-* simple renaming foo
-* pair vs metagenome/genome - jean setup.
+* here, snakemake is constructing strings to run, that is all. debugging thoughts.
 
 ## Additional references
 
