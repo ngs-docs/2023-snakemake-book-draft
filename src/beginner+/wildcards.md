@@ -40,7 +40,7 @@ takes the prefix, and then looks for the matching input file
 This is incredibly useful and means that in many cases you can write
 a single rule that is applied to hundreds or thousands of files!
 
-However, there are a lot of subleties to consider. In this
+However, there are a few subleties to consider. In this
 chapter, we're going to cover the most important of those subtleties, and
 provide links where you can learn more.
 
@@ -61,10 +61,12 @@ The wildcard in the output block will match _any_ file that ends with
 powerful and constraining: you can create any file with the suffix
 `.a.out` - but you also need to _ask_ for the file to be created.
 
-This means that somewhere, in either the snakefile on or on the command line,
-you need to request a file that ends in `.a.out` in order for snakemake to
-fill in the wildcard. There's no other way for snakemake to guess at the
-value of the wildcard.
+This means that in order to make use of this rule, there needs to be
+another rule that has a file that ends in `.a.out` as a required input.
+(You can also explicitly ask for such a file on the command line.) 
+There's no other way for snakemake to guess at the
+value of the wildcard: snakemake follows the dictum that explicit is
+better than implicit, and it will not guess at what files you want created.
 
 Among other implications, this means that once you put a wildcard in a
 rule, you can no longer run that rule by the rule name - you have to
@@ -73,6 +75,11 @@ wildcard but don't tell it what filename you want to create, you'll get:
 ```
 Target rules may not contain wildcards.
 ```
+
+One common way to work with wildcard rules is to have another rule that
+uses `expand` to construct a list of desired files; this is often paired
+with a `glob_wildcards` to load a list of wildcards. See the recipe for
+renaming files by prefix, below.
 
 ### Wildcards are local to each rule
 
@@ -207,9 +214,68 @@ section for more details!
 
 ### Running one rule on many files
 
-handcoding list of files
-fastqc or gzip?
-all files/all subdirectories
+Wildcards can be used to run the same rule on many files - this is
+one of the simplest and most powerful kind uses for snakemake!
+
+Consider this Snakefile for compressing many files:
+
+```python
+{{#include ../../code/examples/wildcards.many/Snakefile}}
+```
+
+This Snakefile specifies a list of compressed files that it wants produced,
+and relies on wildcards to do the pattern matching required to find the
+input files.
+
+See [Replacing for loops with Snakefiles](../recipes/replacing-for.md)
+for more examples of this powerful pattern!
+
+That having been said, this Snakefile is inconvenient to write and is
+somewhat error prone - specifically,
+
+* writing out the list of files is annoying if you have many of them.
+* to generate the list of files, you have to hand-rename them. That's error
+  prone!
+  
+Snakemake has several features that can help with these issues! You
+can load the list of files from a text file or spreadsheet, or get the
+list directly from the directoriy using `glob_wildcards`; and you can
+use `expand` to rename them in bulk. Read on for some examples!
+
+```admonish info title='Why is this better than using gzip directly?'
+
+It would be possible to accomplish the same task by using `gzip -k original/*`,
+although you'd have to move the files into their final location, too.
+
+How is this different? And is it better?
+
+First, while the results aren't different - either way you end up with
+a set of compressed files, which is what you want! - the `gzip -k` command
+runs in *serial* and will not run in *parallel* - that is, gzip will
+by default compress one file at a time. The Snakefile will run on in
+parallel, using as many processor as you specify with `-j`.
+That means that if you had many, many such files - a common problem in
+bioinformatics! - the snakemake version could potentially run many times
+faster.
+
+Second, the `gzip -k original/*` approach will not work with every
+command. Some commands only run on one file at a time; gzip just happens
+to work whether you give it one or many files. (CTB example?)
+
+Third, in the Snakefile we are being explicit about which files we
+expect to finish with, while if we just ran `gzip -k original/*` we would
+simply be asking it to compress every file in `original/`. If we accidentally
+deleted a file in the `original` subdirectory, then gzip would not know
+about it and would not complain - but snakemake would. This is a theme
+that will come up repeatedly - it's often safer to be really explicit about
+what files you expect, so that you can be alerted to possible mistakes.
+
+And, fourth, the Snakefile approach will let you rename the output
+files in interesting ways - with `gzip -k original/*`, you're stuck
+with the original filenames.  This is a feature we will explore in the
+next subsection!
+
+```
 
 ### Renaming files by prefix using `glob_wildcards`
 
@@ -232,18 +298,58 @@ a directory and then make a copy of them with the new name under the
 {{#include ../../code/examples/wildcards.renaming_simple/Snakefile}}
 ```
 
-Here you could do a `mv` instead of a `cp` and then the glob_wildcards would no longer pick
-up the changed files after running.
+This Snakefile also makes use of `expand` to rewrite the learned
+wildcards into the desired set of filenames. This means that we no
+longer have to write out the list of files ourselves - we can let
+snakemake do it. `expand` is discussed further in
+[Using expand to generate filenames](expand.md).
+
+Note that here you could do a `mv` instead of a `cp` and then the
+glob_wildcards would no longer pick up the changed files after
+running.
+
+This Snakefile does have the problem that it loads the list of files
+from the directory itself, which means that if an input file is
+accidentally deleted, snakemake won't complain. When renaming files,
+this is unlikely to cause problems; when running workflows, we recommend
+loading the list of samples from a text file or spreadsheet to avoid
+problems (CTB recipe).
+
+Also note that this Snakefile will find and rename all files
+in `original/` as well as any subdirectories! This is because
+`glob_wildcards` by default includes all subdirectories.
 
 ### Renaming files using multiple wildcards
 
+The previous example works really well when you want to change just
+the suffix of a file and can use a single wildcard, but if you want to
+do more complicated renaming you have to use multiple wildcards.
+
+Consider the situation where you want to rename files from the form of
+`F3D141_S207_L001_R1_001.fastq` to `F3D141_S207_R1.fastq`. You can't
+do that with a single wildcard, unfortunately - but you can use two,
+like so:
 
 
 ```python
 {{#include ../../code/examples/wildcards.renaming/Snakefile}}
 ```
 
-note: includes files in subdirectories!
+We're making use of three new features in this code:
+
+First, `glob_wildcards` will happily match multiple wildcards, and
+put them in a single result variable (here, `files`).
+
+Second, the matching wildcards will be in two lists, `files.sample` and
+`files.r`, that are matched in order.
+
+Third, when we use `expand`, we're asking it to "zip" the two lists
+of wildcards together, rather than making all possible combinations.
+See [Using expand to generate filenames](expand.md) for more information
+on this.
+
+As with the previous example, this Snakefile will find and rename all files
+in `original/` as well as any subdirectories!
 
 Links:
 

@@ -18,12 +18,13 @@
   - [Chapter 11 - our final Snakefile - review and discussion](./chapter_11.md)
   
 - [Section 3 - Beyond Your First Snakefile](./section_3.md)
+  - [`input:` and `output:` blocks](./beginner+/input-and-output-blocks.md)
   - [Using wildcards to generalize your rules](./beginner+/wildcards.md)
   - [Using `expand` to generate filenames](./beginner+/expand.md))
   - [Debugging snakemake workflows](./beginner+/debugging.md)
   - [Basic syntax rules for Snakefiles](./beginner+/syntax.md)
-  - [Input and output blocks](./beginner+/input-and-output-blocks.md)
   - [Visualizing your workflow](./beginner+/visualizing.md)
+  - [String formatting "minilanguage"](./beginner+/string-formatting.md)
 
 - [Section 4 - Snakemake Patterns and Recipes](./section_4.md)
   - [Subsampling FASTQ files](./recipes/subsampling-files.md)
