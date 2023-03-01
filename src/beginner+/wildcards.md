@@ -46,6 +46,8 @@ provide links where you can learn more.
 
 ## Rules for wildcards
 
+First, let's go through some basic rules for wildcards.
+
 ### Wildcards are determined by the desired output
 
 The first and most important rule of wildcards is this: snakemake
@@ -68,7 +70,16 @@ There's no other way for snakemake to guess at the
 value of the wildcard: snakemake follows the dictum that explicit is
 better than implicit, and it will not guess at what files you want created.
 
-Among other implications, this means that once you put a wildcard in a
+For example, the above rule could be paired with another rule that asks
+for one or more filenames ending in `.a.out`:
+```python
+rule make_me_a_file:
+    input:
+        "result1.a.out",
+        "result2.a.out",
+```
+
+This also means that once you put a wildcard in a
 rule, you can no longer run that rule by the rule name - you have to
 ask for a filename, instead.  If you try to run a rule that contains a
 wildcard but don't tell it what filename you want to create, you'll get:
@@ -83,11 +94,11 @@ renaming files by prefix, below.
 
 ### Wildcards are local to each rule
 
-Wildcard names only match _within_ a rule block. You can use the same
-wildcard names in multiple rules for consistency, but snakemake won't
-treat them any differently based on their shared name.
+Wildcard names only matter _within_ a rule block. You can use the same
+wildcard names in multiple rules for consistency and readability, but
+snakemake will treat them as independent wildcards.
 
-So, for example, this:
+So, for example, these two rules use the same wildcard `a` in both rules -
 
 ```python
 rule analyze_this:
@@ -99,7 +110,8 @@ rule analyze_that:
     output: "{a}.third.txt"
 ```
 
-is equivalent to:
+but is equivalent to these two rules, which use different wildcards
+`a` and `b` in two separate rules:
 
 ```python
 rule analyze_this:
@@ -111,7 +123,7 @@ rule analyze_that:
     output: "{b}.third.txt"
 ```
 
-One exception is when you use
+One exception to this rule is when you use
 [global wildcard constraints](../reference/wildcard-constraints.md) to
 constrain wildcard matching by wildcard name: there, the constraints
 apply across all uses of that wildcard name in the Snakefile.
@@ -161,15 +173,16 @@ rule analyze_this:
 
 Note that the `wildcards` namespace is only available _within_ a rule -
 that's because wildcards only exist within individual rules, and wildcards
-are not shared across rules!
+are not shared across rules! (CTB maybe remove.)
 
 ### All wildcards used in a rule must match to wildcards in the `output:` block
 
 snakemake uses the wildcards in the `output:` block to fill in the wildcards
-elsewhere in the rule, so they have to match across the blocks.
+elsewhere in the rule, so you can only use wildcards mentioned in `output:`.
 
 So, for example, every wildcard in the `input:` block needs to be used
-in `output:`.  Consider:
+in `output:`.  Consider the following example, where the input block
+contains a wildcard `analysis` that is not used in the output block:
 
 ```python
 # this does not work:
@@ -178,8 +191,9 @@ rule analyze_sample:
     input: "{sample}.x.{analysis}.in"
     output: "{sample}.out"
 ```
-because snakemake doesn't know how to fill in the `analysis` wildcard in
-the _input_ block.
+
+This doesn't work because snakemake doesn't know how to fill in the
+`analysis` wildcard in the _input_ block.
 
 Think about it this way: if this worked, there would be multiple
 different input files for the same output, and snakemake would
@@ -250,26 +264,27 @@ although you'd have to move the files into their final location, too.
 
 How is this different? And is it better?
 
-First, while the results aren't different - either way you end up with
-a set of compressed files, which is what you want! - the `gzip -k` command
-runs in *serial* and will not run in *parallel* - that is, gzip will
-by default compress one file at a time. The Snakefile will run on in
-parallel, using as many processor as you specify with `-j`.
-That means that if you had many, many such files - a common problem in
-bioinformatics! - the snakemake version could potentially run many times
-faster.
+First, while the results aren't different - both approaches will
+compress the set of input files, which is what you want! - the `gzip
+-k` command runs in *serial* and will not run in *parallel* - that is,
+gzip will by default compress one file at a time. The Snakefile will
+run the rule `gzip_file` _in parallel_, using as many processors as you
+specify with `-j`.  That means that if you had many, many such files -
+a common problem in bioinformatics! - the snakemake version could
+potentially run many times faster.
 
 Second, the `gzip -k original/*` approach will not work with every
 command. Some commands only run on one file at a time; gzip just happens
 to work whether you give it one or many files. (CTB example?)
 
 Third, in the Snakefile we are being explicit about which files we
-expect to finish with, while if we just ran `gzip -k original/*` we would
-simply be asking it to compress every file in `original/`. If we accidentally
-deleted a file in the `original` subdirectory, then gzip would not know
-about it and would not complain - but snakemake would. This is a theme
-that will come up repeatedly - it's often safer to be really explicit about
-what files you expect, so that you can be alerted to possible mistakes.
+expect to exist after the rules are run, while if we just ran `gzip -k
+original/*` we are asking the shell to compress every file in
+`original/`. If we accidentally deleted a file in the `original`
+subdirectory, then gzip would not know about it and would not
+complain - but snakemake would. This is a theme that will come up
+repeatedly - it's often safer to be really explicit about what files
+you expect, so that you can be alerted to possible mistakes.
 
 And, fourth, the Snakefile approach will let you rename the output
 files in interesting ways - with `gzip -k original/*`, you're stuck
@@ -322,6 +337,8 @@ in `original/` as well as any subdirectories! This is because
 
 ### Constraining wildcards to avoid (e.g.) subdirectories and/or periods
 
+CTB towrite.
+
 See [Wildcard constraints](../reference/wildcard-constraints.md) for more
 information and details.
 
@@ -346,7 +363,7 @@ like so:
 We're making use of three new features in this code:
 
 First, `glob_wildcards` will happily match multiple wildcards, and
-put them in a single result variable (here, `files`).
+put the matching strings in a single result variable (here, `files`).
 
 Second, the matching wildcards will be in two lists, `files.sample` and
 `files.r`, that are matched in order.
@@ -356,8 +373,8 @@ of wildcards together, rather than making all possible combinations.
 See [Using expand to generate filenames](expand.md) for more information
 on this.
 
-As with the previous example, this Snakefile will find and rename all files
-in `original/` as well as any subdirectories!
+Also - as with the previous example, this Snakefile will find and
+rename all files in `original/` as well as any subdirectories!
 
 Links:
 
@@ -365,12 +382,15 @@ Links:
 
 ### Mixing and matching strings
 
-A somewhat nonintuitive (but also very useful) outcome of wildcards
-being local to rules is that you can do clever string matching.
+A somewhat nonintuitive (but also very useful) consequence of wildcards
+being local to rules is that you can do clever string matching to make
+more generic rules, as well as more specific rulesm.
 
-Consider this Snakefile:
+Consider this Snakefile, in which we are mapping reads from multiple
+samples to multiple references (rule `map_reads_to_reference`) as well
+as converting SAM to BAM files:
 
-(transfer to functional Snakefile)
+(CTB: transfer to functional Snakefile)
 
 ```python
 rule all:
@@ -394,8 +414,8 @@ rule convert_sam_to_bam:
 # CTB put in shell commands ;)
 ```
 
-Here, snakemake is happily using different wildcards, and matching
-them to different parts of the pattern, in each rule!
+Here, snakemake is happily using different wildcards in each rule, and
+matching them to different parts of the pattern! So,
 
 * Rule `convert_sam_to_bam` will generically convert any SAM file to a BAM
 file, regardless of any other details of its name.
