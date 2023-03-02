@@ -1,0 +1,34 @@
+rule all:
+    input: "aggregate.txt"
+
+# make a potentially unknown number of files
+checkpoint make_many_files:
+    output: directory("many_files")
+    shell: """
+        mkdir -p many_files
+        echo 1 > many_files/1.out
+        echo 2 > many_files/2.out
+    """
+
+#
+# create a Python function that loads in the filenames only AFTER
+# the 'make_many_files' checkpoint rule is run.
+#
+
+def load_many_files(wc):
+    # wait for results of 'make_many_files'
+    checkpoint_output = checkpoints.make_many_files.get(**wc).output[0]
+    
+    # this will only be run *after* 'make_many_files' is done.
+    many_files_names = glob_wildcards('many_files/{name}.out').name
+
+    return expand('many_files/{name}.out', name=many_files_names)
+
+# use 'load_many_files' as an input - this rule will only be run AFTER
+# 'make_many_files' is run.
+rule work_with_many_files:
+    input:
+        load_many_files
+    output: "aggregate.txt"
+    shell:
+        "cat {input} > {output}"

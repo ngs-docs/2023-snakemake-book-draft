@@ -1,0 +1,12 @@
+rule use_subdir_file:
+    input: "subdir/"
+    shell: """
+        cat subdir/a_file.txt
+    """
+
+rule make_file_in_subdir:
+    output: directory("subdir/")
+    shell: """
+        mkdir -p subdir
+        echo hello world > subdir/a_file.txt
+    """
