@@ -2,7 +2,7 @@
 
 As we showed in [Chapter 6](../chapter_6.md), when you have repeated
 substrings between input and output, you can extract them into
-wildcards - going from
+wildcards - going from a rule that makes specific outputs:
 
 ```python
 rule sketch_genomes_1:
@@ -15,7 +15,7 @@ rule sketch_genomes_1:
     """
 ```
 
-to
+to a rule that makes any output that fits a pattern:
 
 ```python
 rule sketch_genomes_1:
@@ -30,7 +30,7 @@ rule sketch_genomes_1:
 ```
 
 Here, `{accession}` is a wildcard that "fills in" as needed for any filename
-that is in the `genomes/` directory and ends with `.fna.gz`.
+that is under the `genomes/` directory and ends with `.fna.gz`.
 
 Snakemake uses simple _pattern matching_ to determine the value of
 `{accession}` - if asked for a filename ending in `.fna.gz.sig`, snakemake
@@ -38,7 +38,7 @@ takes the prefix, and then looks for the matching input file
 `genomes/{accession}.fna.gz`, and fills in `{input}` accordingly.
 
 This is incredibly useful and means that in many cases you can write
-a single rule that is applied to hundreds or thousands of files!
+a single rule that can generate hundreds or thousands of files!
 
 However, there are a few subleties to consider. In this
 chapter, we're going to cover the most important of those subtleties, and
@@ -92,11 +92,40 @@ uses `expand` to construct a list of desired files; this is often paired
 with a `glob_wildcards` to load a list of wildcards. See the recipe for
 renaming files by prefix, below.
 
+### All wildcards used in a rule must match to wildcards in the `output:` block
+
+snakemake uses the wildcards in the `output:` block to fill in the wildcards
+elsewhere in the rule, so you can only use wildcards mentioned in `output:`.
+
+So, for example, every wildcard in the `input:` block needs to be used
+in `output:`.  Consider the following example, where the input block
+contains a wildcard `analysis` that is not used in the output block:
+
+```python
+# this does not work:
+
+rule analyze_sample:
+    input: "{sample}.x.{analysis}.in"
+    output: "{sample}.out"
+```
+
+This doesn't work because snakemake doesn't know how to fill in the
+`analysis` wildcard in the _input_ block.
+
+Think about it this way: if this worked, there would be multiple
+different input files for the same output, and snakemake would
+have no way to choose which input file to use.
+
+There are situations where wildcards in the `output:` block do _not_ need
+to be in the `input:` block, however - see section CTBXXX below on
+using wildcards to determine parameters for the shell block.
+
 ### Wildcards are local to each rule
 
-Wildcard names only matter _within_ a rule block. You can use the same
+Wildcard names must only match _within_ a rule block. You can use the same
 wildcard names in multiple rules for consistency and readability, but
-snakemake will treat them as independent wildcards.
+snakemake will treat them as independent wildcards, and wildcard values
+will not be shared.
 
 So, for example, these two rules use the same wildcard `a` in both rules -
 
@@ -110,8 +139,8 @@ rule analyze_that:
     output: "{a}.third.txt"
 ```
 
-but is equivalent to these two rules, which use different wildcards
-`a` and `b` in two separate rules:
+but this is equivalent to these next two rules, which use _different_
+wildcards `a` and `b` in the separate rules:
 
 ```python
 rule analyze_this:
@@ -123,22 +152,26 @@ rule analyze_that:
     output: "{b}.third.txt"
 ```
 
-One exception to this rule is when you use
+There is an exception to the rule that wildcards are independent:
+when you use 
 [global wildcard constraints](../reference/wildcard-constraints.md) to
-constrain wildcard matching by wildcard name: there, the constraints
+constrain wildcard matching by wildcard name, the constraints
 apply across all uses of that wildcard name in the Snakefile.
+However, the _values_ of the wildcards remain independent - it's just
+the constraint that is shared.
 
 <!-- CTB: fix link to point directly to global wildcard constraints. -->
 
-A good convention is to choose wildcards to have the same semantic
-meaning across the Snakefile - e.g. always use `sample` to mean the
-same thing. This makes reading the Snakefile easier!
+While wildcards are independent in values, it is a good convention to
+choose wildcards to have the same semantic meaning across the
+Snakefile - e.g. always use `sample` consistently to refer to a
+sample. This makes reading the Snakefile easier!
 
-An interesting addendum: because wildcards are local to each rule, you
+One interesting addendum: because wildcards are local to each rule, you
 are free to match different parts of patterns in different rules!
 See "Mixing and matching wildcards", below. (CTB)
 
-### Wildcards are automatically available in `input:` and `output:` blocks, but not in other blocks.
+### The wildcard namespace is implicitly available in `input:` and `output:` blocks, but not in other blocks.
     
 Within the `input:` and `output:` blocks in a rule, you can refer to
 wildcards directly by name. If you want to use wildcards in other
@@ -175,41 +208,15 @@ Note that the `wildcards` namespace is only available _within_ a rule -
 that's because wildcards only exist within individual rules, and wildcards
 are not shared across rules! (CTB maybe remove.)
 
-### All wildcards used in a rule must match to wildcards in the `output:` block
-
-snakemake uses the wildcards in the `output:` block to fill in the wildcards
-elsewhere in the rule, so you can only use wildcards mentioned in `output:`.
-
-So, for example, every wildcard in the `input:` block needs to be used
-in `output:`.  Consider the following example, where the input block
-contains a wildcard `analysis` that is not used in the output block:
-
-```python
-# this does not work:
-
-rule analyze_sample:
-    input: "{sample}.x.{analysis}.in"
-    output: "{sample}.out"
-```
-
-This doesn't work because snakemake doesn't know how to fill in the
-`analysis` wildcard in the _input_ block.
-
-Think about it this way: if this worked, there would be multiple
-different input files for the same output, and snakemake would
-have no way to choose which input file to use.
-
-There are situations where wildcards in the `output:` block do _not_ need
-to be in the `input:` block, however - see section CTBXXX below on
-using wildcards to determine parameters for the shell block.
-
 ### Wildcards match greedily, unless constrained
 
 Wildcard pattern matching chooses the _longest possible_ match to
 _any_ characters, which can sometimes cause problems. (CTB: example?
 Probably prefix/suffix...)
 
-CTB fixme, from snakemake docs:
+CTB fixme!
+
+Fom snakemake docs:
 
 >Multiple wildcards in one filename can cause ambiguity. 
 
@@ -229,8 +236,8 @@ section for more details!
 
 ### Running one rule on many files
 
-Wildcards can be used to run the same rule on many files - this is
-one of the simplest and most powerful kind uses for snakemake!
+Wildcards can be used to run the same simple rule on many files - this is
+one of the simplest and most powerful uses for snakemake!
 
 Consider this Snakefile for compressing many files:
 
@@ -240,13 +247,13 @@ Consider this Snakefile for compressing many files:
 
 This Snakefile specifies a list of compressed files that it wants produced,
 and relies on wildcards to do the pattern matching required to find the
-input files.
+input files and fill in the shell block.
 
 See [Replacing for loops with Snakefiles](../recipes/replacing-for.md)
 for more examples of this powerful pattern!
 
 That having been said, this Snakefile is inconvenient to write and is
-somewhat error prone - specifically,
+somewhat error prone:
 
 * writing out the files individually is annoying if you have many of them!
 * to generate the list of files, you have to hand-rename them, which is
@@ -259,10 +266,11 @@ use `expand` to rename them in bulk. Read on for some examples!
 
 ```admonish info title='Why is this better than using gzip directly?'
 
-It would be possible to accomplish the same task by using `gzip -k original/*`,
+It is possible to accomplish the same task by using `gzip -k original/*`,
 although you'd have to move the files into their final location, too.
 
-How is this different? And is it better?
+How is using `gzip -k original/*` different from using snakemake? And
+is it better?
 
 First, while the results aren't different - both approaches will
 compress the set of input files, which is what you want! - the `gzip
@@ -273,9 +281,10 @@ specify with `-j`.  That means that if you had many, many such files -
 a common problem in bioinformatics! - the snakemake version could
 potentially run many times faster.
 
-Second, the `gzip -k original/*` approach will not work with every
-command. Some commands only run on one file at a time; gzip just happens
-to work whether you give it one or many files. (CTB example?)
+Second, specifying many files on the command line with `gzip -k
+original/*` works with `gzip` but not with every shell command. Some
+commands only run on one file at a time; `gzip` just happens to work
+whether you give it one or many files. (CTB example?)
 
 Third, in the Snakefile we are being explicit about which files we
 expect to exist after the rules are run, while if we just ran `gzip -k
@@ -308,34 +317,51 @@ before `.fastq`. This is very easy with wildcards!
 
 The below Snakefile uses `glob_wildcards` to load in a list of files from
 a directory and then make a copy of them with the new name under the
-`renamed/` subdirectory:
+`renamed/` subdirectory. Here, `glob_wildcards` extracts the `{sample}`
+pattern _from_ the set of available files in the directory:
 
 ```python
 {{#include ../../code/examples/wildcards.renaming_simple/Snakefile}}
 ```
 
-This Snakefile also makes use of `expand` to rewrite the learned
-wildcards into the desired set of filenames. This means that we no
+This Snakefile also makes use of `expand` to rewrite the loaded list
+into the desired set of filenames. This means that we no
 longer have to write out the list of files ourselves - we can let
-snakemake do it. `expand` is discussed further in
+snakemake do it! `expand` is discussed further in
 [Using expand to generate filenames](expand.md).
 
 Note that here you could do a `mv` instead of a `cp` and then
 `glob_wildcards` would no longer pick up the changed files after
 running.
 
-This Snakefile does have the problem that it loads the list of files
-from the directory itself, which means that if an input file is
-accidentally deleted, snakemake won't complain. When renaming files,
-this is unlikely to cause problems; however, when running workflows,
-we recommend loading the list of samples from a text file or
-spreadsheet to avoid problems (CTB recipe).
+This Snakefile loads the list of files from the directory itself,
+which means that if an input file is accidentally deleted, snakemake
+won't complain. When renaming files, this is unlikely to cause
+problems; however, when running workflows, we recommend loading the
+list of samples from a text file or spreadsheet to avoid problems (CTB
+recipe).
 
-Also note that this Snakefile will find and rename all files
-in `original/` as well as any subdirectories! This is because
-`glob_wildcards` by default includes all subdirectories.
+Also note that this Snakefile will find and rename all files in
+`original/` as well as any subdirectories! This is because
+`glob_wildcards` by default includes all subdirectories. See CTBXXX
+the next example below to see how to use wildcard constraints to
+prevent loading from subdirectories.
 
 ### Constraining wildcards to avoid (e.g.) subdirectories and/or periods
+
+Wildcards match to any string, including '/', and so
+`glob_wildcards` will automatically find files in subdirectories
+and will also "stretch out" to match common delimiters in filenames
+such as '.' and '-'.  You can limit such matches using wildcard
+constraints.
+
+Two common constraints are shown below, separately and in combination.
+The first constraint avoids files in subdirectories, and the second
+constraint avoids periods.
+
+```python
+{{#include ../../code/examples/wildcards.basic_constrain/Snakefile:constraints}}
+```
 
 CTB towrite.
 
@@ -348,7 +374,7 @@ information and details.
 
 The first renaming example above works really well when you want to change just
 the suffix of a file and can use a single wildcard, but if you want to
-do more complicated renaming you have to use multiple wildcards.
+do more complicated renaming you may have to use multiple wildcards.
 
 Consider the situation where you want to rename files from the form of
 `F3D141_S207_L001_R1_001.fastq` to `F3D141_S207_R1.fastq`. You can't
@@ -362,16 +388,18 @@ like so:
 
 We're making use of three new features in this code:
 
-First, `glob_wildcards` will happily match multiple wildcards, and
-put the matching strings in a single result variable (here, `files`).
+First, `glob_wildcards` is matching multiple wildcards, and
+puts the resulting values into a single result variable (here, `files`).
 
-Second, the matching wildcards will be in two lists, `files.sample` and
-`files.r`, that are matched in order.
+Second, the matching values are placed in two ordered lists,
+`files.sample` and `files.r`, such that values extracted from file names
+match in pairs.
 
-Third, when we use `expand`, we're asking it to "zip" the two lists
-of wildcards together, rather than making all possible combinations.
-See [Using expand to generate filenames](expand.md) for more information
-on this.
+Third, when we use `expand`, we're asking it to "zip" the two lists of
+wildcards together, rather than the default, which is to make all
+possible combinations with `product`.  See
+[Using expand to generate filenames](expand.md) for more information
+on `zip` vs `product`.
 
 Also - as with the previous example, this Snakefile will find and
 rename all files in `original/` as well as any subdirectories!
@@ -383,8 +411,8 @@ Links:
 ### Mixing and matching strings
 
 A somewhat nonintuitive (but also very useful) consequence of wildcards
-being local to rules is that you can do clever string matching to make
-more generic rules, as well as more specific rulesm.
+being local to rules is that you can do clever string matching to mix and
+match generic rules with more specific rules.
 
 Consider this Snakefile, in which we are mapping reads from multiple
 samples to multiple references (rule `map_reads_to_reference`) as well
@@ -418,13 +446,13 @@ Here, snakemake is happily using different wildcards in each rule, and
 matching them to different parts of the pattern! So,
 
 * Rule `convert_sam_to_bam` will generically convert any SAM file to a BAM
-file, regardless of any other details of its name.
+file based solely on the `.bam` and `.sam` suffixes.
 
 * However, `map_reads_to_references` will only produce mapping files that
 match the pattern of `{sample}.x.{reference}`, which in turn depend on the
 existence of  `{reference}.fa` and `{sample}.fastq`.
 
-This works because, ultimately, snakemake is simply matching strings
+This works because, ultimately, snakemake is just matching strings
 and does not "know" anything about the structure of the strings that
 it's matching. And it also doesn't remember wildcards across rules. So
 snakemake will happily match one set of wildcards in one rule, and a
@@ -433,8 +461,9 @@ different set of wildcards in another rule!
 ### Using wildcards to determine parameters to use in the shell block.
 
 You can also use wildcards to build rules that produce output files
-where the contents are based on the filename; for example, consider
-this example of how to generate a subset of a FASTQ file:
+where the parameters used to _generate_ the contents are based on the
+filename; for example, consider this example of generating subsets
+of FASTQ files:
 
 ```python
 {{#include ../../code/examples/wildcards.subset/Snakefile}}

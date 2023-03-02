@@ -89,6 +89,8 @@ then files in subdirectories will not be matched:
 {{#include ../../code/misc/wildcards/wildcards.snakefile:no-subdir}}
 ```
 
+CTB check
+
 ## Using wildcard constraints in rules
 
 * only need in first place wildcard is mentioned

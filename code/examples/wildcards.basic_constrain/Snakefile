@@ -1,0 +1,24 @@
+# ANCHOR: constraints
+# match all .txt files - no constraints
+all_files = glob_wildcards("{filename}.txt").filename
+
+# match all .txt files in this directory only - avoid /
+this_dir_files = glob_wildcards("{filename,[^/]+}.txt").filename
+
+# match all files with only a single period in their name - avoid .
+prefix_only = glob_wildcards("{filename,[^.]+}.txt").filename
+
+# match all files in this directory with only a single period in their name
+# avoid / and .
+prefix_and_dir_only = glob_wildcards("{filename,[^./]+}.txt").filename
+# ANCHOR_END: constraints
+
+print(all_files)
+print(this_dir_files)
+print(prefix_only)
+print(prefix_and_dir_only)
+
+assert all_files == ['file1.subset', 'file1', 'subdir/file2', 'subdir/file2.subset', 'subdir/nested/file3']
+assert this_dir_files == ['file1.subset', 'file1']
+assert prefix_only == ['file1', 'subdir/file2', 'subdir/nested/file3']
+assert prefix_and_dir_only == ['file1']
