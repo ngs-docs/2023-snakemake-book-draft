@@ -116,9 +116,10 @@ Think about it this way: if this worked, there would be multiple
 different input files for the same output, and snakemake would
 have no way to choose which input file to use.
 
-There are situations where wildcards in the `output:` block do _not_ need
-to be in the `input:` block, however - see section CTBXXX below on
-using wildcards to determine parameters for the shell block.
+There are situations where wildcards in the `output:` block do _not_
+need to be in the `input:` block, however - see "Using wildcards to
+determine parameters to use in the shell block", below, on using
+wildcards to determine parameters for the shell block.
 
 ### Wildcards are local to each rule
 
@@ -169,7 +170,7 @@ sample. This makes reading the Snakefile easier!
 
 One interesting addendum: because wildcards are local to each rule, you
 are free to match different parts of patterns in different rules!
-See "Mixing and matching wildcards", below. (CTB)
+See "Mixing and matching wildcards", below.
 
 ### The wildcard namespace is implicitly available in `input:` and `output:` blocks, but not in other blocks.
     
@@ -204,33 +205,38 @@ rule analyze_this:
     shell: "analyze {input} -o {output} --title {wildcards.a}"
 ```
 
-Note that the `wildcards` namespace is only available _within_ a rule -
-that's because wildcards only exist within individual rules, and wildcards
-are not shared across rules! (CTB maybe remove.)
-
 ### Wildcards match greedily, unless constrained
 
 Wildcard pattern matching chooses the _longest possible_ match to
-_any_ characters, which can sometimes cause problems. (CTB: example?
-Probably prefix/suffix...)
-
-CTB fixme!
-
-Fom snakemake docs:
-
->Multiple wildcards in one filename can cause ambiguity. 
-
-You can use
-[wildcard constraints](../reference/wildcard-constraints.md) to limit
-wildcard matching.  In particular, I sometimes find it useful to avoid
-having wildcards match to files in subdirectories:
+_any_ characters, which can result in slightly confusing
+behavior. Consider:
 
 ```python
-{{#include ../../code/misc/wildcards/wildcards.snakefile:no-subdir}}
+{{#include ../../code/examples/wildcards.greedy/snakefile.1}}
 ```
 
-See the [wildcard constraints](../reference/wildcard-constraints.md)
-section for more details!
+In the `something` rule, for the desired output file `x.y.z.gz`,
+`{prefix}` will currently be `x.y` and `{suffix}` will be `z`.
+But it would be equally valid for `{prefix}` to be `x` and
+suffix to be `y.z`.
+
+A more extreme example shows the greedy matching even more clearly:
+```python
+{{#include ../../code/examples/wildcards.greedy/snakefile.2}}
+```
+where `{suffix}` is reduced down to a single character, `e`, and
+`{prefix}` is `longer_filenam`!
+
+Two simple rules for wildcard matching are:
+* all wildcards must match at least one character.
+* after that, wildcards will match greedily: each wildcard will match everything it can before the next wildcard is considered.
+
+Therefore, it's good practice to use
+[wildcard constraints](../reference/wildcard-constraints.md) to limit
+wildcard matching.  See "Constraining wildcards to avoid
+subdirectories and/or periods", below, for some examples, and see the
+[wildcard constraints](../reference/wildcard-constraints.md) chapter
+for more details!
 
 ## Some examples of wildcards
 
@@ -284,7 +290,12 @@ potentially run many times faster.
 Second, specifying many files on the command line with `gzip -k
 original/*` works with `gzip` but not with every shell command. Some
 commands only run on one file at a time; `gzip` just happens to work
-whether you give it one or many files. (CTB example?)
+whether you give it one or many files. Many other programs do not work
+on multiple input files; e.g. the `fastp` program for preprocessing
+FASTQ files runs on one dataset at a time.  (It's also worth
+mentioning that snakemake gives you a way to flexibly write custom
+command lines; for some examples, see the chapter on
+[Input and Output Blocks](input-and-output-blocks.md).)
 
 Third, in the Snakefile we are being explicit about which files we
 expect to exist after the rules are run, while if we just ran `gzip -k
@@ -338,32 +349,32 @@ This Snakefile loads the list of files from the directory itself,
 which means that if an input file is accidentally deleted, snakemake
 won't complain. When renaming files, this is unlikely to cause
 problems; however, when running workflows, we recommend loading the
-list of samples from a text file or spreadsheet to avoid problems (CTB
-recipe).
+list of samples from a text file or spreadsheet to avoid problems
+
+<!-- (CTB point to a recipe). -->
 
 Also note that this Snakefile will find and rename all files in
 `original/` as well as any subdirectories! This is because
-`glob_wildcards` by default includes all subdirectories. See CTBXXX
-the next example below to see how to use wildcard constraints to
+`glob_wildcards` by default includes all subdirectories. See
+the next section below to see how to use wildcard constraints to
 prevent loading from subdirectories.
 
-### Constraining wildcards to avoid (e.g.) subdirectories and/or periods
+### Constraining wildcards to avoid subdirectories and/or periods
 
-Wildcards match to any string, including '/', and so
-`glob_wildcards` will automatically find files in subdirectories
-and will also "stretch out" to match common delimiters in filenames
-such as '.' and '-'.  You can limit such matches using wildcard
-constraints.
+Wildcards match to any string, including '/', and so `glob_wildcards`
+will automatically find files in subdirectories and will also "stretch
+out" to match common delimiters in filenames such as '.' and '-'. This
+is commonly referred to as "greedy matching" and it means that
+sometimes your wildcards will match to far more of a filename than you
+want!  You can limit wildcard matches using wildcard constraints.
 
-Two common constraints are shown below, separately and in combination.
-The first constraint avoids files in subdirectories, and the second
-constraint avoids periods.
+Two common wildcard constraints are shown below, separately and in
+combination.  The first constraint avoids files in subdirectories, and
+the second constraint avoids periods.
 
 ```python
 {{#include ../../code/examples/wildcards.basic_constrain/Snakefile:constraints}}
 ```
-
-CTB towrite.
 
 See [Wildcard constraints](../reference/wildcard-constraints.md) for more
 information and details.
@@ -418,7 +429,7 @@ Consider this Snakefile, in which we are mapping reads from multiple
 samples to multiple references (rule `map_reads_to_reference`) as well
 as converting SAM to BAM files:
 
-(CTB: transfer to functional Snakefile)
+<!-- CTB: transfer to functional Snakefile? -->
 
 ```python
 rule all:
@@ -433,13 +444,14 @@ rule map_reads_to_reference:
         reference="{genome}.fa",
     output:
         "{reads}.x.{reference}.sam"
+    shell: "minimap2 -ax sr {input.reference} {input.reads} > {output}"
         
 rule convert_sam_to_bam:
     input:
         "{filename}.sam"
     output:
         "{filename}.bam"
-# CTB put in shell commands ;)
+    shell: "samtools view -b {input} -o {output}
 ```
 
 Here, snakemake is happily using different wildcards in each rule, and
@@ -474,21 +486,33 @@ input filename. The wildcard value is used by snakemake to determine
 how to fill in the number of lines for `head` to select from the file!
 
 This can be really useful for generating files with many different
-parameters to a particular shell command - "parameter sweeps". See CTB XXX.
+parameters to a particular shell command - "parameter sweeps".  More
+about this later.
+
+<!-- See CTB XXX.
 
 CTB link to:
 * params functions, params lambda?
 * parameter sweeps with this and expand
+-->
 
-## How to think about wildcards, and expand.
+## How to think about wildcards
 
-Maybe a whole new section...
+Wildcards (together with `expand` and `glob_wildcards`) are perhaps
+the single most powerful feature in snakemake: they permit generic
+application of rules to an arbitrary number of files, based entirely
+on simple patterns.
 
-Mention:
+However, with that power comes quite a bit of complexity!
 
-* here, snakemake is constructing strings to run, that is all. debugging thoughts.
+Ultimately, wildcards are all about *strings* and *patterns*.
+Snakemake is using pattern matching to extract patterns from the
+desired output files, and then filling those matches in elsewhere in
+the rule. Most of the ensuing complexity comes avoiding ambiguity in
+matching and filling in patterns, along with the paired challenge of
+constructing all the names of the files you actually want to create.
 
 ## Additional references
 
-See also:
-* the [snakemake docs on wildcards](https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#snakefiles-wildcards)
+See also: the
+[snakemake docs on wildcards](https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#snakefiles-wildcards).
