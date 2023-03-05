@@ -3,7 +3,7 @@
 - comma separated list + keywords
 - evaluate to space separated list
 - wildcards can be used, no wildcards. prefix required
-- quoting with :q
+- shell quoting with :q
 
 - lists
 - names / namespaces

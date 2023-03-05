@@ -205,6 +205,8 @@ rule analyze_this:
     shell: "analyze {input} -o {output} --title {wildcards.a}"
 ```
 
+CTB: adjust to note that it's available in params blocks.
+
 ### Wildcards match greedily, unless constrained
 
 Wildcard pattern matching chooses the _longest possible_ match to
