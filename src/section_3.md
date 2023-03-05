@@ -8,3 +8,8 @@ A partial list:
 * glob_wildcards
 * loading from CSVs or elsewhere
 * config files
+
+Write something nice about information overload for the intro.
+
+Reorder things so that wildcards are first? Or maybe even their own
+section?
