@@ -1,0 +1,11 @@
+rule all:
+    input:
+        "output.4.txt"
+
+rule use_params:
+    params:
+        val = wildcards.val
+    output: "output.{val}.txt"
+    shell: """
+        echo {params.val} > {output}
+    """

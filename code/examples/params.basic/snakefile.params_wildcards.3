@@ -1,0 +1,11 @@
+rule all:
+    input:
+        "output.6.txt"
+
+rule use_params:
+    params:
+        val = "{val}"
+    output: "output.{val}.txt"
+    shell: """
+        echo {params.val} > {output}
+    """
