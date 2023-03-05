@@ -1,0 +1,23 @@
+def calc_num_lines(wildcards):
+    # convert wildcards.num_records to an integer:
+    num_records = int(wildcards.num_records)
+
+    # calculate number of lines (records * 4)
+    num_lines = num_records * 4
+
+    return num_lines
+
+rule all:
+    input:
+        "big.subset25.fastq"
+
+rule subset:
+    input:
+        "big.fastq"
+    output:
+        "big.subset{num_records}.fastq"
+    params:
+        num_lines = calc_num_lines
+    shell: """
+        head -{params.num_lines} {input} > {output}
+    """

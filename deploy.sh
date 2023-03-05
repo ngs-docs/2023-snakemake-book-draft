@@ -6,7 +6,7 @@ mdbook build -d ${tmpdir}
 echo "build directory is: ${tmpdir}"
 
 # go to temp directory
-cd ${tmpdir}
+cd ${tmpdir}/html/
 
 # indicate that GitHub should not interpret this as a Jekyll site, i.e.
 # it's a static site.

@@ -30,3 +30,5 @@ look like THAT, and here's what to run to make that happen.
 `expand` tells snakemake WHAT you want to make, wildcard rules tell
 snakemake HOW to make those things.
 
+CTB: add discussion about how this is the same as list of strings.
+CTB: refer to [additional expand docs](beginner+/expand.md).

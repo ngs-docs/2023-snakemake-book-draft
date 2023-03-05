@@ -1,0 +1,14 @@
+rule all:
+    input:
+        "compressed/F3D141_S207_L001_R1_001.fastq.gz",
+        "compressed/F3D141_S207_L001_R2_001.fastq.gz",
+        "compressed/F3D142_S208_L001_R1_001.fastq.gz",
+        "compressed/F3D142_S208_L001_R2_001.fastq.gz"
+
+rule gzip_file:
+    input:
+        "original/{filename}"
+    output:
+        "compressed/{filename}.gz"
+    shell:
+        "gzip -c {input} > {output}"

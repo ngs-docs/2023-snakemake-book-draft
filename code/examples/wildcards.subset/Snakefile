@@ -1,0 +1,12 @@
+rule all:
+    input:
+        "big.subset100.fastq"
+
+rule subset:
+    input:
+        "big.fastq"
+    output:
+        "big.subset{num_lines}.fastq"
+    shell: """
+        head -{wildcards.num_lines} {input} > {output}
+    """

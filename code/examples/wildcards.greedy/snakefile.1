@@ -1,0 +1,8 @@
+rule all:
+    input:
+        "x.y.z.gz"
+
+rule something:
+    input: "{prefix}.{suffix}.txt"
+    output: "{prefix}.{suffix}.gz"
+    shell: "gzip -c {input} > {output}"

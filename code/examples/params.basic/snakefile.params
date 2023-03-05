@@ -1,0 +1,7 @@
+rule use_params:
+    params:
+        val = 5
+    output: "output.txt"
+    shell: """
+        echo {params.val} > {output}
+    """
