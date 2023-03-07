@@ -10,7 +10,7 @@ with wildcards, as shown in [Chapter 6](../chapter_6.md), where wildcard
 values are properly substituted into the `{input}` and `{output}` values.
 
 In this chapter, we will discuss the use of input and output blocks
-more comprehensively.
+a bit more comprehensively.
 
 ## Providing lists
 
@@ -26,9 +26,9 @@ rule example:
        "output1.txt",
        "output2.txt"
    shell: """
-       echo {input}
-       echo {output}
-       touch {output}
+       echo {input:q}
+       echo {output:q}
+       touch {output:q}
    """
 ```
 
@@ -38,23 +38,71 @@ i.e. the above shell command will print out first `file1.txt
 file2.txt` and then `output1.txt output2.txt` before using `touch` to
 create the empty output files.
 
+Here we are also asking snakemake's templating minilanguage (CTB link)
+to quote them for the shell - this means that if there are spaces, or
+characters like quotes, they will be properly escaped using
+[Python's shlex.quote function](https://docs.python.org/3/library/shlex.html#shlex.quote).
+(CTB some examples - whitespace, and quotes?) **This should always be
+used for anything executed in a shell block** - it does no harm and it
+can prevent serious bugs!
 
-- comma separated list + keywords
+We can also refer to individual input and output entries by using
+square brackets to index them as lists, starting with position 0:
+
+```python
+rule example:
+   ...
+   shell: """
+       echo first input is {input[0]:q}
+       echo second input is {input[1]:q}
+       echo first output is {output[0]:q}
+       echo second output is {output[1]:q}
+       touch {output}
+   """
+```
+
+but we don't recommend this, because if you change the order of the
+inputs and outputs, or add some, you have to go through and adjust the
+indices.
+
+## Using keywords for input and output files
+
+You can also use keywords to name
+
+```python
+rule example:
+   input:
+       a="file1.txt",
+       b="file2.txt",
+   output:
+       a="output1.txt",
+       c="output2.txt"
+   shell: """
+       echo first input is {input.a:q}
+       echo second input is {input.b:q}
+       echo first output is {output.a:q}
+       echo second output is {output.c:q}
+       touch {output}
+   """
+```
+
+Here, `a` and `b` in the input block, and `a` and `c` in the output block,
+are keyword names for the input and output files; and in the shell command,
+they can be referred to with `{input.a}`, `{input.b}`, `{output.a}`, and
+`{output.c}` respectively. Any valid variable name can be used.
+
+**This is my recommended way of referring to specific input and output
+files.** It is clearer to read, and robust to rearrangements or additions.
+
+See below for an example of using this to run the megahit assembler.
+
+(CTB discuss error message if you get name wrong)
+
+## Examples
+
 - wildcards can be used, no wildcards. prefix required
-- shell quoting with :q
-
-- lists
-- names / namespaces
-
-- flexibly rewrite command lines
 - example: megahit
-
-- just the basics, also have advanced section
-
-recommendation:
-- don't use list indices - either use {input} or {input.name}
-
-
+- flexibly rewrite command lines
 
 ## Input functions and more advanced features
 
@@ -83,3 +131,8 @@ When asked to create `output5.txt`, this rule will look for
 Since this functionality relies on some knowledge of Python, we will
 defer discussion of it until later.
 
+## References and Links
+
+[Python minilanguage format](https://docs.python.org/3/library/string.html#formatspec)
+
+[Snakemake manual section](https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#snakefiles-and-rules)
