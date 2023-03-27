@@ -61,14 +61,15 @@ rule example:
    """
 ```
 
-but we don't recommend this, because if you change the order of the
-inputs and outputs, or add some, you have to go through and adjust the
-indices.
+but we don't recommend this: if you change the order of the inputs and
+outputs, or add new inputs, you have to go through and adjust the
+indices.  Relyong on the number and position of indices in a list is
+error prone!
 
 ## Using keywords for input and output files
 
-You can also use keywords to name
-
+You can also name specific inputs and outputs using the _keyword_
+syntax, and then refer to those using `input.` and `output.` prefixes:
 ```python
 rule example:
    input:
@@ -87,12 +88,16 @@ rule example:
 ```
 
 Here, `a` and `b` in the input block, and `a` and `c` in the output block,
-are keyword names for the input and output files; and in the shell command,
+are keyword names for the input and output files; in the shell command,
 they can be referred to with `{input.a}`, `{input.b}`, `{output.a}`, and
-`{output.c}` respectively. Any valid variable name can be used.
+`{output.c}` respectively. Any valid variable name can be used, and the
+same name can be used in the input and output blocks without collision,
+as with `input.a` and `output.a`, above, which are distinct values.
 
 **This is my recommended way of referring to specific input and output
-files.** It is clearer to read, and robust to rearrangements or additions.
+files.** It is clearer to read, robust to rearrangements or additions, and
+(perhaps most importantly) can guide the reader to the _purpose_ of each
+input and output.
 
 See below for an example of using this to run the megahit assembler.
 
