@@ -175,8 +175,9 @@ See "Mixing and matching wildcards", below.
 ### The wildcard namespace is implicitly available in `input:` and `output:` blocks, but not in other blocks.
     
 Within the `input:` and `output:` blocks in a rule, you can refer to
-wildcards directly by name. If you want to use wildcards in other
-parts of a rule you need to use the `wildcards.` prefix. Here,
+wildcards directly by name. If you want to use wildcards in most other
+parts of a rule you need to use the `wildcards.` prefix; `params:` blocks
+is the only exception. Here,
 `wildcards` is a _namespace_, which we will talk about more later. (CTB)
 
 Consider this Snakefile:
@@ -204,8 +205,6 @@ rule analyze_this:
     output: "{a}.second.txt"
     shell: "analyze {input} -o {output} --title {wildcards.a}"
 ```
-
-CTB: adjust to note that it's available in params blocks. Josh Shapiro.
 
 ### Wildcards match greedily, unless constrained
 
