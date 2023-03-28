@@ -44,7 +44,7 @@ the standard [string formatting operations](string-formatting.md).
 See this example: (CTB write a better example; maybe something with
 parameter formatting, or value calculation.)
 ```python
-{{#include ../../code/examples/params.basic/snakefile.params_wildcards.3}}
+{{#include ../../code/examples/input_output.quoting/snakefile.basic}}
 ```
 
 ## Params blocks also support a variety of other functionality

@@ -18,33 +18,25 @@ As we saw previously, snakemake will happily take multiple input and
 output values via comma-separated lists.
 
 ```python
-rule example:
-   input:
-       "file1.txt",
-       "file2.txt",
-   output:
-       "output1.txt",
-       "output2.txt"
-   shell: """
-       echo {input:q}
-       echo {output:q}
-       touch {output:q}
-   """
+{{#include ../../code/examples/params.basic/snakefile.params_wildcards.3}}
 ```
 
 and when these are substituted into shell commands with `{input}` and
 `{output}` they will be turned into space-separated lists in order,
 i.e. the above shell command will print out first `file1.txt
-file2.txt` and then `output1.txt output2.txt` before using `touch` to
+file2.txt` and then `output file1.txt output file2.txt` before using `touch` to
 create the empty output files.
 
-Here we are also asking snakemake's templating minilanguage (CTB link)
-to quote them for the shell - this means that if there are spaces, or
+Here we are also asking snakemake to quote filenames for the shell
+command using `:q` - this means that if there are spaces, or
 characters like quotes, they will be properly escaped using
 [Python's shlex.quote function](https://docs.python.org/3/library/shlex.html#shlex.quote).
-(CTB some examples - whitespace, and quotes?) **This should always be
-used for anything executed in a shell block** - it does no harm and it
-can prevent serious bugs!
+For example, here both output files contain a space, and so `touch
+{output}` would create three files -- `output`, `file1.txt`, and
+`file2.txt` -- rather than the correct two files, `output file1.txt`
+and `output file2.txt`.  **This should always be used for anything
+executed in a shell block** - it does no harm and it can prevent
+serious bugs!
 
 We can also refer to individual input and output entries by using
 square brackets to index them as lists, starting with position 0:
@@ -63,7 +55,7 @@ rule example:
 
 but we don't recommend this: if you change the order of the inputs and
 outputs, or add new inputs, you have to go through and adjust the
-indices.  Relyong on the number and position of indices in a list is
+indices.  Relying on the number and position of indices in a list is
 error prone!
 
 ## Using keywords for input and output files
@@ -71,20 +63,7 @@ error prone!
 You can also name specific inputs and outputs using the _keyword_
 syntax, and then refer to those using `input.` and `output.` prefixes:
 ```python
-rule example:
-   input:
-       a="file1.txt",
-       b="file2.txt",
-   output:
-       a="output1.txt",
-       c="output2.txt"
-   shell: """
-       echo first input is {input.a:q}
-       echo second input is {input.b:q}
-       echo first output is {output.a:q}
-       echo second output is {output.c:q}
-       touch {output}
-   """
+{{#include ../../code/examples/input_output.quoting/snakefile.names}}
 ```
 
 Here, `a` and `b` in the input block, and `a` and `c` in the output block,
@@ -105,7 +84,6 @@ See below for an example of using this to run the megahit assembler.
 
 ## Examples
 
-- wildcards can be used, no wildcards. prefix required
 - example: megahit
 - flexibly rewrite command lines
 
@@ -116,25 +94,15 @@ on Python programming - for example, one can define a Python function
 that is called to generate a value based on a wildcard object, as below:
 
 ```python
-def multiply_by_5(w):
-    return f"file{int(w.val) * 5}.txt"
-    
-    
-rule make_file:
-    input:
-        filename=multiply_by_5,
-    output:
-        "output{val}.txt"
-    shell: """
-        cp {input} {output}
-    """
+{{#include ../../code/examples/input_output.quoting/snakefile.func:content}}
 ```
 
 When asked to create `output5.txt`, this rule will look for
 `file25.txt`.
 
-Since this functionality relies on some knowledge of Python, we will
-defer discussion of it until later.
+Since this functionality relies on knowledge of
+[wildcards](wildcards.md) as well as some knowledge of Python, we will
+defer discussion of it until later!
 
 ## References and Links
 
