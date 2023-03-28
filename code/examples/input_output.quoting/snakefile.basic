@@ -4,7 +4,7 @@ rule example:
        "file2.txt",
    output:
        "output file1.txt",
-       "output file2.txt"
+       "output file2.txt",
    shell: """
        echo {input:q}
        echo {output:q}

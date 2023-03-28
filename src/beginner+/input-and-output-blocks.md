@@ -18,7 +18,7 @@ As we saw previously, snakemake will happily take multiple input and
 output values via comma-separated lists.
 
 ```python
-{{#include ../../code/examples/params.basic/snakefile.params_wildcards.3}}
+{{#include ../../code/examples/input_output.quoting/snakefile.basic}}
 ```
 
 and when these are substituted into shell commands with `{input}` and
