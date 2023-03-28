@@ -30,9 +30,10 @@ and is then available under the name `{params.val}` in the `shell:` block.
 This is analogous to [using keywords in input and output blocks](input-and-output-blocks.md#using-keywords-for-input-and-output-files), but unlike in
 input and output blocks, keywords _must_ be used in params blocks.
 
-In this example, there's no gain in functionality, but there is some gain
-in readability: here it's clear that `val` is a tunable parameter that
-can be modified without understanding the details of the shell block.
+In this example, there's no gain in functionality, but there is some
+gain in readability: the syntax makes it clear that `val` is a tunable
+parameter that can be modified without understanding the details of
+the shell block.
 
 ## Params blocks have access to wildcards
 
