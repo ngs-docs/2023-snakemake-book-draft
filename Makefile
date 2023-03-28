@@ -12,4 +12,10 @@ sync: build .PHONY
 gh-pages: .PHONY
 	./deploy.sh
 
+run.sh: .PHONY
+	./find-snakefiles.py code -l -o run.sh
+
+test: run.sh
+	bash run.sh
+
 .PHONY:
