@@ -176,9 +176,10 @@ See "Mixing and matching wildcards", below.
     
 Within the `input:` and `output:` blocks in a rule, you can refer to
 wildcards directly by name. If you want to use wildcards in most other
-parts of a rule you need to use the `wildcards.` prefix; `params:` blocks
-is the only exception. Here,
-`wildcards` is a _namespace_, which we will talk about more later. (CTB)
+parts of a rule you need to use the `wildcards.` prefix; `params:`
+blocks are the only exception (see
+[`params:` blocks and `{params}`](params-blocks.md). Here, `wildcards`
+is a _namespace_, which we will talk about more later. (CTB)
 
 Consider this Snakefile:
 

@@ -1,4 +1,4 @@
-# `param:` blocks and `{params}`
+# `params:` blocks and `{params}`
 
 As we saw previously,
 [input and output blocks](input-and-output-blocks.md) are key to the
@@ -41,10 +41,12 @@ directly available in `params:` blocks without using the `wildcards.`
 prefix; for example, this means that you can use them in strings using
 the standard [string formatting operations](string-formatting.md).
 
-See this example: (CTB write a better example; maybe something with
-parameter formatting, or value calculation.)
+For example, the `bowtie` read alignment software takes the _prefix_ of
+the output SAM file via `-S`, which means you cannot
+name the file correctly with `bowtie ... -S {output}`.  Instead, you could
+use `{params.prefix}` like so:
 ```python
-{{#include ../../code/examples/input_output.quoting/snakefile.basic}}
+{{#include ../../code/examples/params.basic/snakefile.params_wildcards:content}}
 ```
 
 ## Params blocks also support a variety of other functionality

@@ -1,0 +1,16 @@
+# targets: -n
+
+# ANCHOR: content
+rule all:
+    input:
+        "reads.sam"
+
+rule use_params:
+    input: "{prefix}.fq",
+    output: "{prefix}.sam",
+    params:
+        prefix = "{prefix}"
+    shell: """
+        bowtie index -U {input} -S {params.prefix}
+    """
+# ANCHOR_END: content
