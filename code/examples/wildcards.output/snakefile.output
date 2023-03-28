@@ -1,3 +1,5 @@
+# targets: result1.a.out
+
 rule a:
     output: "{prefix}.a.out"
     shell: "touch {output}"

@@ -1,0 +1,14 @@
+rule example:
+   input:
+       a="file1.txt",
+       b="file2.txt",
+   output:
+       a="output file11.txt",
+       c="output file21.txt"
+   shell: """
+       echo first input is {input.a:q}
+       echo second input is {input.b:q}
+       echo first output is {output.a:q}
+       echo second output is {output.c:q}
+       touch {output:q}
+   """

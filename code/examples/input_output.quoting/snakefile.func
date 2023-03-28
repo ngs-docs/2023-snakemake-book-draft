@@ -1,0 +1,17 @@
+# targets: output5.txt
+
+# ANCHOR: content
+def multiply_by_5(w):
+    return f"file{int(w.val) * 5}.txt"
+    
+    
+rule make_file:
+    input:
+        # look for input file{val*5}.txt if asked to create output{val}.txt
+        filename=multiply_by_5,
+    output:
+        "output{val}.txt"
+    shell: """
+        cp {input} {output:q}
+    """
+# ANCHOR_END: content

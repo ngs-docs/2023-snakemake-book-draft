@@ -1,11 +1,16 @@
+# targets: -n
+
+# ANCHOR: content
 rule all:
     input:
-        "output.4.txt"
+        "reads.sam"
 
 rule use_params:
+    input: "{prefix}.fq",
+    output: "{prefix}.sam",
     params:
-        val = wildcards.val
-    output: "output.{val}.txt"
+        prefix = "{prefix}"
     shell: """
-        echo {params.val} > {output}
+        bowtie index -U {input} -S {params.prefix}
     """
+# ANCHOR_END: content

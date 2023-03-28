@@ -1,1 +1,1 @@
-# Applying one rule to to many files - replacing for loops in shell scripts
+# Applying one rule to many files - replacing for loops in shell scripts

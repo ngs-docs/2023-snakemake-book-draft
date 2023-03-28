@@ -1,3 +1,5 @@
 book
 *~
 .snakemake
+*.out
+run.sh

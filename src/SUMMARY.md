@@ -19,8 +19,8 @@
   
 - [Section 3 - Beyond Your First Snakefile](./section_3.md)
   - [`input:` and `output:` blocks](./beginner+/input-and-output-blocks.md)
-  - [`param:` blocks and `{params}`](./beginner+/param-blocks.md)
   - [Using wildcards to generalize your rules](./beginner+/wildcards.md)
+  - [`params:` blocks and `{params}`](./beginner+/params-blocks.md)
   - [Using `expand` to generate filenames](./beginner+/expand.md))
   - [Debugging snakemake workflows](./beginner+/debugging.md)
   - [Basic syntax rules for Snakefiles](./beginner+/syntax.md)
