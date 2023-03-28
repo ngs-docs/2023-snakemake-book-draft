@@ -1,0 +1,17 @@
+# targets: -n
+
+# ANCHOR: content
+rule all:
+    input:
+        "assembly_out"
+
+rule assemble:
+    input:
+        R1="sample_R1.fastq.gz",
+        R2="sample_R2.fastq.gz",
+    output:
+        directory("assembly_out")
+    shell: """
+        megahit -1 {input.R1} -2 {input.R2} -o {output}
+    """
+# ANCHOR_END: content

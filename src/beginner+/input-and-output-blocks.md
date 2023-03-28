@@ -82,10 +82,17 @@ See below for an example of using this to run the megahit assembler.
 
 (CTB discuss error message if you get name wrong)
 
-## Examples
+## Example: writing a flexible command line
 
-- example: megahit
-- flexibly rewrite command lines
+One example where it's particularly useful to be able to refer to
+specific inputs is when running the `megahit` assembler on paired-end
+input reads. Consider the following Snakefile:
+```python
+{{#include ../../code/examples/input_output.megahit/Snakefile:content}}
+```
+Here, we need to supply the input reads as two separate files,
+with `-1` before one and `-2` before the second. The resulting
+shell command is very readable!
 
 ## Input functions and more advanced features
 
@@ -106,6 +113,4 @@ defer discussion of it until later!
 
 ## References and Links
 
-[Python minilanguage format](https://docs.python.org/3/library/string.html#formatspec)
-
-[Snakemake manual section](https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#snakefiles-and-rules)
+* [Snakemake manual section on rules](https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#snakefiles-and-rules)
