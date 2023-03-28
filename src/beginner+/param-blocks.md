@@ -50,7 +50,7 @@ parameter formatting, or value calculation.)
 ## Params blocks also support a variety of other functionality
 
 * bring in config values
-* [input functions & params functions](params-functions.md)
+* [input functions & params functions](../recipes/params-functions.md)
 
 ## Links and references:
 
