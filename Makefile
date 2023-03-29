@@ -18,4 +18,7 @@ run.sh: .PHONY
 test: run.sh
 	bash run.sh
 
+cleanup:
+	find . \( -name "*~" -o -name "*.out" \) -exec rm {} \;
+
 .PHONY:

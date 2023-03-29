@@ -3,8 +3,8 @@ rule example:
        a="file1.txt",
        b="file2.txt",
    output:
-       a="output file11.txt",
-       c="output file21.txt"
+       a="output file1.txt",
+       c="output file2.txt"
    shell: """
        echo first input is {input.a:q}
        echo second input is {input.b:q}
