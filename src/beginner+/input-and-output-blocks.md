@@ -12,7 +12,7 @@ values are properly substituted into the `{input}` and `{output}` values.
 In this chapter, we will discuss the use of input and output blocks
 a bit more comprehensively.
 
-## Providing lists
+## Providing inputs and outputs
 
 As we saw previously, snakemake will happily take multiple input and
 output values via comma-separated lists.
@@ -38,6 +38,45 @@ and `output file2.txt`.  **This should always be used for anything
 executed in a shell block** - it does no harm and it can prevent
 serious bugs!
 
+~~~admonish info title='Where can we (and should we) put commas?'
+
+In the above code example, you will notice that `"file2.txt"` and
+`"output file2.txt"` have commas after them:
+
+```python
+{{#include ../../code/examples/input_output.quoting/snakefile.basic}}
+```
+
+Are these required? **No.** The above code is equivalent to:
+
+```python
+{{#include ../../code/examples/input_output.quoting/snakefile.basic2}}
+```
+
+where there are no commas after the last line in input and output.
+
+The general rule is this: you need internal commas to separate items
+in the list, because otherwise strings will be concatenated to each
+other - i.e. `"file1.txt" "file2.txt"` will become `"file1.txtfile2.txt"`,
+even if there's a newline between them! But a trailing comma is optional
+(and ignored).
+
+Why!?  These are _Python tuples_ and you can add a trailing comma if
+you like: `a, b, c,` is equivalent to `a, b, c`. You can read more
+about that syntax [here](../appendix/python.md) (CTB link to specific
+section).
+
+So why do we add a trailing comma?! I suggest using trailing commas
+because it makes it easy to add a new input or output without
+forgetting to add a comma, and this is a mistake I make frequently!
+This is a (small and simple but still useful) example of _defensive
+programming_, where I use optional syntax rules to head off common
+mistakes.
+
+~~~
+
+## Inputs and outputs are _ordered lists_
+
 We can also refer to individual input and output entries by using
 square brackets to index them as lists, starting with position 0:
 
@@ -60,7 +99,7 @@ error prone!
 
 ## Using keywords for input and output files
 
-You can also name specific inputs and outputs using the _keyword_
+You can instead name specific inputs and outputs using the _keyword_
 syntax, and then refer to those using `input.` and `output.` prefixes:
 ```python
 {{#include ../../code/examples/input_output.quoting/snakefile.names}}

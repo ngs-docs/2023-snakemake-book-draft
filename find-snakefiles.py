@@ -6,6 +6,7 @@ code to run them. Very much a WIP.
 TODO?
 - set bash foo
 - write individual shell scripts => support parallel??
+- support isolated build/etc directories
 """
 import sys
 import os

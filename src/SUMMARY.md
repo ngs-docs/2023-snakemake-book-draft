@@ -1,6 +1,7 @@
 # Summary
 
 - [Introduction](./intro.md)
+- [Acknowledgements](./acknowledgements.md)
 
 - [Section 1 - A Stepwise Introduction to Snakemake](./chapter_0.md)
   - [Chapter 1 - snakemake runs programs for you!](./chapter_1.md)

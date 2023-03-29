@@ -3,3 +3,4 @@ book
 .snakemake
 *.out
 run.sh
+.DS_Store
