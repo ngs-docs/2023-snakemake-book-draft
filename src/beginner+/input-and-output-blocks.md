@@ -1,13 +1,16 @@
 # `input:` and `output:` blocks
 
 As we saw in [Chapter 2](../chapter_2.md), snakemake will automatically
-run rules for you when it detects that one rule provides an output
-that is needed for another rule's input. And, in
-[Chapter 3](../chapter_3.md), we saw that snakemake will fill in `{input}`
-and `{output}` in the shell command based on the contents of the
-`input:` and `output:` blocks. This becomes even more useful
-with wildcards, as shown in [Chapter 6](../chapter_6.md), where wildcard
-values are properly substituted into the `{input}` and `{output}` values.
+"chain" rules by connecting inputs to outputs. That is, snakemake
+will figure out _what to run_ in order to produce the desired output,
+even if it takes many steps.
+
+In [Chapter 3](../chapter_3.md), we also saw that snakemake will fill
+in `{input}` and `{output}` in the shell command based on the contents
+of the `input:` and `output:` blocks. This becomes even more useful
+when using wildcards to generalize rules, as shown in
+[Chapter 6](../chapter_6.md), where wildcard values are properly
+substituted into the `{input}` and `{output}` values.
 
 In this chapter, we will discuss the use of input and output blocks
 a bit more comprehensively.
@@ -92,15 +95,16 @@ rule example:
    """
 ```
 
-but we don't recommend this: if you change the order of the inputs and
-outputs, or add new inputs, you have to go through and adjust the
-indices.  Relying on the number and position of indices in a list is
-error prone!
+However, **we don't recommend this**: if you change the order of the
+inputs and outputs, or add new inputs, you have to go through and
+adjust the indices to match.  Relying on the number and position of
+indices in a list is error prone!
 
 ## Using keywords for input and output files
 
 You can instead name specific inputs and outputs using the _keyword_
-syntax, and then refer to those using `input.` and `output.` prefixes:
+syntax, and then refer to those using `input.` and `output.` prefixes.
+The following Snakefile rule does this:
 ```python
 {{#include ../../code/examples/input_output.quoting/snakefile.names}}
 ```
@@ -117,9 +121,18 @@ files.** It is clearer to read, robust to rearrangements or additions, and
 (perhaps most importantly) can guide the reader to the _purpose_ of each
 input and output.
 
-See below for an example of using this to run the megahit assembler.
+If you use the wrong keyword names in your shell code, you'll get an
+error message. For example, this code:
+```python
+{{#include ../../code/examples/input_output.quoting/snakefile.names.broken:content}}
+```
+gives this error message:
+```
+AttributeError: 'InputFiles' object has no attribute 'z', when formatting the following:
 
-(CTB discuss error message if you get name wrong)
+       echo first input is {input.z:q}
+   
+```
 
 ## Example: writing a flexible command line
 
@@ -137,7 +150,7 @@ shell command is very readable!
 
 There are a number of more advanced uses of input and output that rely
 on Python programming - for example, one can define a Python function
-that is called to generate a value based on a wildcard object, as below:
+that is called to _generate_ a value dynamically, as below -
 
 ```python
 {{#include ../../code/examples/input_output.quoting/snakefile.func:content}}

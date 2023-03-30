@@ -42,15 +42,20 @@ directly available in `params:` blocks without using the `wildcards.`
 prefix; for example, this means that you can use them in strings using
 the standard [string formatting operations](string-formatting.md).
 
-For example, the `bowtie` read alignment software takes the _prefix_ of
-the output SAM file via `-S`, which means you cannot
-name the file correctly with `bowtie ... -S {output}`.  Instead, you could
-use `{params.prefix}` like so:
+This is useful when a shell command needs to use something other than
+the filename - for example, the `bowtie` read alignment software takes
+the _prefix_ of the output SAM file via `-S`, which means you cannot
+name the file correctly with `bowtie ... -S {output}`.  Instead, you
+could use `{params.prefix}` like so:
 ```python
 {{#include ../../code/examples/params.basic/snakefile.params_wildcards:content}}
 ```
+If you were to use `-S {output}` here, you would end up producing a file
+`reads.sam.sam`!
 
 ## Params blocks also support a variety of other functionality
+
+CTB
 
 * bring in config values
 * [input functions & params functions](../recipes/params-functions.md)

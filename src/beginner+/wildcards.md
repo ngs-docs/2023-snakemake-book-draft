@@ -123,7 +123,8 @@ wildcards to determine parameters for the shell block.
 
 ### Wildcards are local to each rule
 
-Wildcard names must only match _within_ a rule block. You can use the same
+Wildcard names only need to match _within_ a rule block; wildcards are not
+shared between rules. You _can_ use the same
 wildcard names in multiple rules for consistency and readability, but
 snakemake will treat them as independent wildcards, and wildcard values
 will not be shared.
@@ -153,10 +154,10 @@ rule analyze_that:
     output: "{b}.third.txt"
 ```
 
-There is an exception to the rule that wildcards are independent:
+There is one exception to the rule that wildcards are independent:
 when you use 
 [global wildcard constraints](../reference/wildcard-constraints.md) to
-constrain wildcard matching by wildcard name, the constraints
+limit wildcard matching by wildcard name, the constraints
 apply across all uses of that wildcard name in the Snakefile.
 However, the _values_ of the wildcards remain independent - it's just
 the constraint that is shared.
@@ -176,8 +177,8 @@ See "Mixing and matching wildcards", below.
     
 Within the `input:` and `output:` blocks in a rule, you can refer to
 wildcards directly by name. If you want to use wildcards in most other
-parts of a rule you need to use the `wildcards.` prefix; `params:`
-blocks are the only exception (see
+parts of a rule you need to use the `wildcards.` prefix; the only
+exception to this rule is `params:` blocks (see
 [`params:` blocks and `{params}`](params-blocks.md). Here, `wildcards`
 is a _namespace_, which we will talk about more later. (CTB)
 
