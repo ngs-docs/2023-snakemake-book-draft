@@ -270,7 +270,7 @@ somewhat error prone:
   
 Snakemake provides several features that can help with these issues. You
 can load the list of files from a text file or spreadsheet, or get the
-list directly from the directoriy using `glob_wildcards`; and you can
+list directly from the directory using `glob_wildcards`; and you can
 use `expand` to rename them in bulk. Read on for some examples!
 
 ```admonish info title='Why is this better than using gzip directly?'
@@ -313,7 +313,6 @@ And, fourth, the Snakefile approach will let you rename the output
 files in interesting ways - with `gzip -k original/*`, you're stuck
 with the original filenames.  This is a feature we will explore in the
 next subsection!
-
 ```
 
 ### Renaming files by prefix using `glob_wildcards`

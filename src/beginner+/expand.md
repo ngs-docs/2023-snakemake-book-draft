@@ -16,10 +16,13 @@ rule compare_genomes:
         "GCF_008423265.1.fna.gz.sig",
 ```
 
-Writing this list out is annoying and error prone.
+Writing this list out is annoying and error prone, because parts of every
+filename are identical and repeated.
 
 Even worse, if you need to use this list it in multiple places, it will
-be error prone to duplicate it.
+be error prone to duplicate it: you are likely to want to add, remove,
+or edit elements of the list, and you will need to change it in multiple
+places.
 
 In [Chapter 9](../chapter_9.md), we changed this to a list of the
 accessions at the top of the Snakefile and then used a function called
@@ -43,9 +46,45 @@ it more!
 
 ## Using `expand` with a single pattern and one list of values
 
+In the example above, we provide a single pattern, `{acc}.fna.gz.sig`,
+and ask `expand` to resolve it into many filenames by filling in values for
+the field name `acc` from each element in `ACCESSIONS`. (You may recognize
+the keyword syntax for specifying values, `acc=ACCESSIONS`, from
+[input and output blocks](input-and-output-blocks.md).)
 
+The result of `expand('{acc}.fna.gz.sig', acc=...)` here is
+_identical_ to writing out the four filenames in long form:
+```
+"GCF_000017325.1.fna.gz.sig",
+"GCF_000020225.1.fna.gz.sig",
+"GCF_000021665.1.fna.gz.sig",
+"GCF_008423265.1.fna.gz.sig"
+```
+That is, `expand` doesn't do any special wildcard matching or pattern
+inference - it just fills in the values and returns the resulting list.
 
-## Using `expand` with multiple patterns and lists
+Here, `ACCESSIONS` can be any Python _iterable_ - for example a list, a tuple, 
+or a dictionary.  See the [Python appendix](../appendix/python.md) for
+details.
+
+## Using `expand` with multiple lists of values
+
+You can also use `expand` with multiple field names. Consider:
+```
+expand('{acc}.fna.{extension}`, acc=ACCESSIONS, extension=['.gz.sig', .gz'])
+```
+This will produce the following eight filenames:
+```
+"GCF_000017325.1.fna.gz.sig",
+"GCF_000017325.1.fna.gz",
+"GCF_000020225.1.fna.gz.sig",
+"GCF_000020225.1.fna.gz",
+"GCF_000021665.1.fna.gz.sig",
+"GCF_000021665.1.fna.gz",
+"GCF_008423265.1.fna.gz.sig",
+"GCF_008423265.1.fna.gz"
+```
+by building every combination of `acc` and `extension`.
 
 ## Generating _all_ combinations vs _pairwise_ combinations
 
@@ -90,9 +129,21 @@ rule all:
 ```
 which will now generate only three filenames: `1.by.a`, `2.by.b`, and `3.by.c`.
 
-* link to snakemake docs here.
+For more information see the [snakemake documentation on using zip instead of product](https://snakemake.readthedocs.io/en/stable/project_info/faq.html#i-don-t-want-expand-to-use-the-product-of-every-wildcard-what-can-i-do).
 
-## Getting list of files to use in `expand`
+## Getting a list of identifiers to use in `expand`
+
+The `expand` function provides an effective solution when you have
+lists of identifiers that you use multiple times in a workflow - a common
+pattern in bioinformatics!  Writing these lists out in a Snakefile
+(as we do in the above examples) is not always practical, however;
+you may have dozens to hundreds of identifiers!
+
+Lists of identifiers can be loaded from _other_ files in a variety of
+ways, and they can also be generated from the set of actual files in
+a directory using `glob_wildcards`.
+
+(Provide recipes: loading from file, CSV; config YAML; using glob_wildcards)
 
 ## Examples
 
@@ -104,11 +155,9 @@ A common pattern: get list of files and
 
 CTB note: link to Python list docs.
 CTB note: cover multiext too?
-CTB note: cover options to epxand? see snakemake.io code
+CTB note: cover options to expand? see snakemake.io code
 
-## Where do you get the accessions from?
+## Links and references
 
-a list
-read_csv - from a config
-glob_wildcards - don't always recommend
-
+* [Snakemake reference documentation for expand](https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#the-expand-function)
+* The [Python `itertools`](https://docs.python.org/3/library/itertools.html) documentation.
