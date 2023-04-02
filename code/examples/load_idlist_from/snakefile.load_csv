@@ -1,0 +1,20 @@
+import pandas
+
+CSV_DATAFRAME = pandas.read_csv('accessions.csv')
+ACCESSIONS = CSV_DATAFRAME['accession']
+
+print(f'ACCESSIONS is a pandas Series of length {len(ACCESSIONS)}')
+print(ACCESSIONS)
+
+rule all:
+    input:
+        expand("{acc}.sig", acc=ACCESSIONS)
+
+rule sketch_genome:
+    input:
+        "genomes/{accession}.fna.gz",
+    output:
+        "{accession}.sig",
+    shell: """
+        sourmash sketch dna -p k=31 {input} --name-from-first -o {output}
+    """

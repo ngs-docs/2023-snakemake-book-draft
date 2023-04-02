@@ -1,0 +1,19 @@
+configfile: "config.yml"
+
+ACCESSIONS = config['accessions']
+    
+print(f'ACCESSIONS is a Python list of length {len(ACCESSIONS)}')
+print(ACCESSIONS)
+
+rule all:
+    input:
+        expand("{acc}.sig", acc=ACCESSIONS)
+
+rule sketch_genome:
+    input:
+        "genomes/{accession}.fna.gz",
+    output:
+        "{accession}.sig",
+    shell: """
+        sourmash sketch dna -p k=31 {input} --name-from-first -o {output}
+    """
