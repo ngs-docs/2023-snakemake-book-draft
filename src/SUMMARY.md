@@ -27,6 +27,11 @@
   - [Basic syntax rules for Snakefiles](./beginner+/syntax.md)
   - [Visualizing your workflow](./beginner+/visualizing.md)
   - [String formatting "minilanguage"](./beginner+/string-formatting.md)
+  
+- [Section 3b - complete examples](./section_3b.md)
+  - [Variant calling](./complete/variant.md)
+  - [Bacterial genome assembly](./complete/assembly.md)
+  - [An RNAseq workflow](./complete/rnaseq.md)
 
 - [Section 4 - Snakemake Patterns and Recipes](./section_4.md)
   - [Subsampling FASTQ files](./recipes/subsampling-files.md)
