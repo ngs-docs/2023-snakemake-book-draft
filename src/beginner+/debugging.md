@@ -1,4 +1,4 @@
-# Debugging workflow execution
+# Techniques for debugging workflow execution
 
 * logs
 * print in Snakefile (use file=)
