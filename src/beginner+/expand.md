@@ -191,12 +191,6 @@ Snakefile to load `accessions.csv`:
 {{#include ../../code/examples/load_idlist_from/snakefile.load_csv}}
 ```
 
-### Using `glob_wildcards`
-
-```python
-{{#include ../../code/examples/load_idlist_from/snakefile.glob_wildcards}}
-```
-
 ### Loading from the config file
 
 Snakemake also supports the use of configuration files, where the snakefile
@@ -214,6 +208,22 @@ which is used by the following Snakefile:
 {{#include ../../code/examples/load_idlist_from/snakefile.use_config}}
 ```
 
+### Using `glob_wildcards` to load IDs or accessions from a set of files
+
+We introduced the `glob_wildcards` command briefly in the
+[chapter on wildcards](wildcards.md#renaming-files-by-prefix-using-glob_wildcards):
+`glob_wildcards` does pattern matching on files _actually present
+in the directory_.  This is a particularly convenient way to get a list
+of accessions, although it is dangerous to use this because Reasons.
+
+CTB discuss use case for samples; recipes?
+CTB link to warning/reiterate warning
+CTB "We discuss glob_wildcards more ..." - constraints, wildcards, where else? Is there more to it?
+
+```python
+{{#include ../../code/examples/load_idlist_from/snakefile.glob_wildcards}}
+```
+
 ### Example combining `glob_wildcards`.
 
 link to example in wildcards, renaming recipe in recipes?
@@ -224,7 +234,28 @@ CTB note: link to Python list docs.
 CTB note: cover multiext too?
 CTB note: cover options to expand? see snakemake.io code
 
+## Wildcards and `expand` - some closing thoughts
+
+Combined with wildcards, `expand` is extremely powerful and useful.
+Just like wildcards, however, this power comes with some complexity.
+Here is a brief rundown of how these features combine.
+
+The `expand` function makes a _list of files to create_ from a pattern and
+a list of values to fill in.
+
+Wildcards in rules provide _recipes_ to create files whose names match a
+pattern.
+
+Typically in Snakefiles we use `expand` to generate a list of files that
+match a certain pattern, and then write a rule that uses wildcards to
+generate those actual files.
+
+The list of values to use with `expand` can come from many places, including
+text files, CSV files, and config files. It can _also_ come from
+`glob_wildcards`, which uses a pattern to _extract_ the list of values from
+files that are actually present.
+
 ## Links and references
 
-* [Snakemake reference documentation for expand](https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#the-expand-function)
+* [snakemake reference documentation for expand](https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#the-expand-function)
 * The [Python `itertools`](https://docs.python.org/3/library/itertools.html) documentation.
