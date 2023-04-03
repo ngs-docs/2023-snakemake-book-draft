@@ -16,15 +16,18 @@ rule compare_genomes:
         "GCF_008423265.1.fna.gz.sig",
 ```
 
-Writing this list out is annoying and error prone, because parts of every
-filename are identical and repeated.
+This list is critical because it specifies the sketches to be created
+by the wildcard rule. However, writing this list out is annoying and
+error prone, because parts of every filename are identical and
+repeated.
 
-Even worse, if you need to use this list it in multiple places, it will
-be error prone to duplicate it: you are likely to want to add, remove,
-or edit elements of the list, and you will need to change it in multiple
+Even worse, if you needed to use this list in multiple places, or
+produce slightly different filenames with the same accessions, that
+will be error prone: you are likely to want to add, remove, or edit
+elements of the list, and you will need to change it in multiple
 places.
 
-In [Chapter 9](../chapter_9.md), we changed this to a list of the
+In [Chapter 9](../chapter_9.md), we showed how to chang this to a list of the
 accessions at the top of the Snakefile and then used a function called
 `expand` to generate the list:
 ```python
@@ -41,8 +44,8 @@ rule compare_genomes:
 
 ```
 
-This is a common pattern in Snakefiles, and in this chapter we'll explore
-it more!
+Using `expand` to generate lists of filenames is a common pattern in
+Snakefiles, and in this chapter we'll explore it more!
 
 ## Using `expand` with a single pattern and one list of values
 
@@ -108,17 +111,20 @@ By default, expand does an all-by-all expansion containing all
 possible combinations. (This is sometimes
 called a Cartesian product, a cross-product, or an outer join.)
 
-But sometimes you don't want that. So how do we change this behavior?
+But you don't always want that. How can we change this behavior?
 
-`expand` takes an optional second argument, the combinator, which
-tells `expand` how to combine the lists of values the come after. By
-default `expand` uses a Python function called `itertools.product`,
-which creates all possible combinations.
+The `expand` function takes an optional second argument, the
+combinator, which tells `expand` how to combine the lists of values
+the come after. By default `expand` uses a Python function called
+`itertools.product`, which creates all possible combinations, but you
+can give it other functions.
 
-You can tell `expand` to create pairwise combinations by using `zip` instead -
-something we did in one of the [wildcard examples](wildcards.md).
+In particular, you can tell `expand` to create pairwise combinations
+by using `zip` instead - something we did in one of the
+[wildcard examples](wildcards.md).
 
-You do this like so:
+Here's an example:
+
 ```python
 X = [1, 2, 3]
 Y = ['a', 'b', 'c']
@@ -128,6 +134,8 @@ rule all:
       expand('{x}.by.{y}', zip, x=X, y=Y)
 ```
 which will now generate only three filenames: `1.by.a`, `2.by.b`, and `3.by.c`.
+
+CTB: mention what will happen if lists are different lengths.
 
 For more information see the [snakemake documentation on using zip instead of product](https://snakemake.readthedocs.io/en/stable/project_info/faq.html#i-don-t-want-expand-to-use-the-product-of-every-wildcard-what-can-i-do).
 
@@ -143,25 +151,25 @@ Lists of identifiers can be loaded from _other_ files in a variety of
 ways, and they can also be generated from the set of actual files in
 a directory using `glob_wildcards`.
 
-(Provide recipes: loading from file, CSV; config YAML; using glob_wildcards)
-
-## Examples
+## Examples of loading lists of accessions from files or directories
 
 ### Loading a list of accessions from a text file
 
-If you have a simple list of accessions in text file, like so:
+If you have a simple list of accessions in a text file
+`accessions.txt`, like so:
 
+File `accessions.txt`:
 ```
 {{#include ../../code/examples/load_idlist_from/accessions.txt}}
 ```
 
-then the following code loads each line in the text file in as a separate
+then the following code will load each line in the text file in as a separate
 ID:
 ```python
 {{#include ../../code/examples/load_idlist_from/snakefile.load_txt}}
 ```
 
-and builds sourmash signatures for it.
+and build sourmash signatures for it each accession.
 
 ### Loading a specific column from a CSV file
 
@@ -169,14 +177,16 @@ If instead of a text file you have a CSV file with multiple columns,
 and the IDs to load are all in one column, you can use the Python
 pandas library to read in the CSV. In the code below,
 `pandas.read_csv` loads the CSV into a pandas DataFrame object, and then
-we select the `accession` column and use that as a list.
+we select the `accession` column and use that as an iterable.
 
 @CTB link to pandas.
 
+File `accessions.csv`:
 ```csv
 {{#include ../../code/examples/load_idlist_from/accessions.csv}}
 ```
 
+Snakefile to load `accessions.csv`:
 ```python
 {{#include ../../code/examples/load_idlist_from/snakefile.load_csv}}
 ```
