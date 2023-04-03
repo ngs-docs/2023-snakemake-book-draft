@@ -147,6 +147,63 @@ a directory using `glob_wildcards`.
 
 ## Examples
 
+### Loading a list of accessions from a text file
+
+If you have a simple list of accessions in text file, like so:
+
+```
+{{#include ../../code/examples/load_idlist_from/accessions.txt}}
+```
+
+then the following code loads each line in the text file in as a separate
+ID:
+```python
+{{#include ../../code/examples/load_idlist_from/snakefile.load_txt}}
+```
+
+and builds sourmash signatures for it.
+
+### Loading a specific column from a CSV file
+
+If instead of a text file you have a CSV file with multiple columns,
+and the IDs to load are all in one column, you can use the Python
+pandas library to read in the CSV. In the code below,
+`pandas.read_csv` loads the CSV into a pandas DataFrame object, and then
+we select the `accession` column and use that as a list.
+
+@CTB link to pandas.
+
+```csv
+{{#include ../../code/examples/load_idlist_from/accessions.csv}}
+```
+
+```python
+{{#include ../../code/examples/load_idlist_from/snakefile.load_csv}}
+```
+
+### Using `glob_wildcards`
+
+```python
+{{#include ../../code/examples/load_idlist_from/snakefile.glob_wildcards}}
+```
+
+### Loading from the config file
+
+Snakemake also supports the use of configuration files, where the snakefile
+supplies the name of the a default config file, which can be overridden
+on the command line.
+
+A config file can also be a good place to put accessions. Consider:
+
+```yaml
+{{#include ../../code/examples/load_idlist_from/config.yml}}
+```
+
+which is used by the following Snakefile:
+```python
+{{#include ../../code/examples/load_idlist_from/snakefile.use_config}}
+```
+
 ### Example combining `glob_wildcards`.
 
 link to example in wildcards, renaming recipe in recipes?
