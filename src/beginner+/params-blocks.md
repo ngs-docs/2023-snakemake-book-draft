@@ -10,15 +10,16 @@ And, because of the way snakemake works, the filenames specified in
 the input and output blocks must exist in order for the workflow to
 proceed past that rule.
 
-Many times, shell commands need to take parameters other than filenames,
-and these parameters may be values that can or should be calculated
-by snakemake.  Therefore, snakemake also supports a `params:` block that
-can be used to provide parameters that are _not_ filenames in the shell
-block. As you'll see below, these can be used for a variety of purposes,
+Frequently, shell commands need to take parameters other than
+filenames, and these parameters may be values that can or should be
+calculated by snakemake.  Therefore, snakemake also supports a
+`params:` block that can be used to provide strings that are _not_
+filenames in the shell block, colloquially known as parameters. As
+you'll see below, these can be used for a variety of purposes,
 including user-configurable parameters as well as parameters that can
 be calculated automatically by Python code.
 
-## A simple example of params blocks
+## A simple example of a params block
 
 Consider:
 ```python
@@ -38,22 +39,28 @@ the shell block.
 ## Params blocks have access to wildcards
 
 Just like the `input:` and `output:` blocks, wildcard values are
-directly available in `params:` blocks without using the `wildcards.`
-prefix; for example, this means that you can use them in strings using
+directly available in `params:` blocks without using the `wildcards`
+prefix; for example, this means that you can use them in strings with
 the standard [string formatting operations](string-formatting.md).
 
-For example, the `bowtie` read alignment software takes the _prefix_ of
-the output SAM file via `-S`, which means you cannot
-name the file correctly with `bowtie ... -S {output}`.  Instead, you could
-use `{params.prefix}` like so:
+This is useful when a shell command needs to use something other than
+the filename - for example, the `bowtie` read alignment software takes
+the _prefix_ of the output SAM file via `-S`, which means you cannot
+name the file correctly with `bowtie ... -S {output}`.  Instead, you
+could use `{params.prefix}` like so:
 ```python
 {{#include ../../code/examples/params.basic/snakefile.params_wildcards:content}}
 ```
+If you were to use `-S {output}` here, you would end up producing a file
+`reads.sam.sam`!
 
 ## Params blocks also support a variety of other functionality
 
+CTB
+
 * bring in config values
 * [input functions & params functions](../recipes/params-functions.md)
+* use comma-separated value for megahit as example? e.g. -r 1,2,3
 
 ## Links and references:
 

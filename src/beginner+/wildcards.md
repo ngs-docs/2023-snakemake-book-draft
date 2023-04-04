@@ -2,7 +2,12 @@
 
 As we showed in [Chapter 6](../chapter_6.md), when you have repeated
 substrings between input and output, you can extract them into
-wildcards - going from a rule that makes specific outputs:
+wildcards - going from a rule that makes specific outputs from
+specific inputs into rules that operate on any input/output sets that
+match a pattern.
+
+For example, the following code creates a single sourmash sketch
+from a specific genome:
 
 ```python
 rule sketch_genomes_1:
@@ -15,7 +20,7 @@ rule sketch_genomes_1:
     """
 ```
 
-to a rule that makes any output that fits a pattern:
+While this rule does the same for *any* genome ending in `.fna.gz`!
 
 ```python
 rule sketch_genomes_1:
@@ -37,12 +42,11 @@ Snakemake uses simple _pattern matching_ to determine the value of
 takes the prefix, and then looks for the matching input file
 `genomes/{accession}.fna.gz`, and fills in `{input}` accordingly.
 
-This is incredibly useful and means that in many cases you can write
-a single rule that can generate hundreds or thousands of files!
-
-However, there are a few subleties to consider. In this
-chapter, we're going to cover the most important of those subtleties, and
-provide links where you can learn more.
+Wildcards are incredibly useful and using them means that in many
+cases you can write a single rule that can generate hundreds or
+thousands of files! However, there are a few subtleties to consider. In
+this chapter, we're going to cover the most important of those
+subtleties, and provide links where you can learn more.
 
 ## Rules for wildcards
 
@@ -64,11 +68,12 @@ powerful and constraining: you can create any file with the suffix
 `.a.out` - but you also need to _ask_ for the file to be created.
 
 This means that in order to make use of this rule, there needs to be
-another rule that has a file that ends in `.a.out` as a required input.
-(You can also explicitly ask for such a file on the command line.) 
-There's no other way for snakemake to guess at the
-value of the wildcard: snakemake follows the dictum that explicit is
-better than implicit, and it will not guess at what files you want created.
+another rule that has a file that ends in `.a.out` as a required
+input.  (You can also explicitly ask for such a file on the command
+line. CTB doc link.)  There's no other way for snakemake to guess at
+the value of the wildcard: snakemake follows the dictum that explicit
+is better than implicit, and it will not guess at what files you want
+created.
 
 For example, the above rule could be paired with another rule that asks
 for one or more filenames ending in `.a.out`:
@@ -90,16 +95,19 @@ Target rules may not contain wildcards.
 One common way to work with wildcard rules is to have another rule that
 uses `expand` to construct a list of desired files; this is often paired
 with a `glob_wildcards` to load a list of wildcards. See the recipe for
-renaming files by prefix, below.
+renaming files by prefix, below, or the chapter on
+[Using `expand` to generate filenames](expand.md).
 
 ### All wildcards used in a rule must match to wildcards in the `output:` block
 
 snakemake uses the wildcards in the `output:` block to fill in the wildcards
-elsewhere in the rule, so you can only use wildcards mentioned in `output:`.
+elsewhere in the rule, so you can only use wildcards mentioned in one or
+more outputs.
 
-So, for example, every wildcard in the `input:` block needs to be used
-in `output:`.  Consider the following example, where the input block
-contains a wildcard `analysis` that is not used in the output block:
+This means that every wildcard used in the `input:` block needs to be
+present in `output:`.  Consider the following example, where the input
+block contains a wildcard `analysis` that is not used in the output
+block:
 
 ```python
 # this does not work:
@@ -110,20 +118,30 @@ rule analyze_sample:
 ```
 
 This doesn't work because snakemake doesn't know how to fill in the
-`analysis` wildcard in the _input_ block.
+`analysis` wildcard in the _input_ block, and you will get an error
+that says so:
+```
+WildcardError in line 1 of ...
+Wildcards in input files cannot be determined from output files:
+'analysis'
+```
 
-Think about it this way: if this worked, there would be multiple
+Think about it this way: if this worked, there could be multiple
 different input files for the same output, and snakemake would
-have no way to choose which input file to use.
+have no way to choose which input file to use to produce the
+desired output; moreover, the outputs would presumably be different
+depending on the inputs used, leading to irreproducibility.
 
-There are situations where wildcards in the `output:` block do _not_
-need to be in the `input:` block, however - see "Using wildcards to
-determine parameters to use in the shell block", below, on using
-wildcards to determine parameters for the shell block.
+Every wildcard in the `input:` block does need to be in the `output:`
+block.  However, there are situations where wildcards in the `output:`
+block do _not_ need to be in the `input:` block - see "Using wildcards
+to determine parameters to use in the shell block", below, on using
+wildcards to determine parameters for the shell block!
 
 ### Wildcards are local to each rule
 
-Wildcard names must only match _within_ a rule block. You can use the same
+Wildcard names only need to match _within_ a rule block; wildcards are not
+shared between rules. You _can_ use the same
 wildcard names in multiple rules for consistency and readability, but
 snakemake will treat them as independent wildcards, and wildcard values
 will not be shared.
@@ -150,23 +168,27 @@ rule analyze_this:
 
 rule analyze_that:
     input: "{b}.second.txt"
+    #        ^-- different - 'b' instead of 'a' in the first rule
     output: "{b}.third.txt"
+    #        ^-- different - 'b' instead of 'a' in the first rule
 ```
 
-There is an exception to the rule that wildcards are independent:
+There is one exception to the rule that wildcards are independent:
 when you use 
 [global wildcard constraints](../reference/wildcard-constraints.md) to
-constrain wildcard matching by wildcard name, the constraints
+limit wildcard matching by wildcard name, the constraints
 apply across all uses of that wildcard name in the Snakefile.
 However, the _values_ of the wildcards remain independent - it's just
-the constraint that is shared.
+the constraint that is shared by all wildcards of the same name.
 
 <!-- CTB: fix link to point directly to global wildcard constraints. -->
 
-While wildcards are independent in values, it is a good convention to
-choose wildcards to have the same semantic meaning across the
-Snakefile - e.g. always use `sample` consistently to refer to a
-sample. This makes reading the Snakefile easier!
+While wildcards are independent in values and you could use different
+wildcards in every rule, it is a good convention to choose wildcards
+to have the same semantic meaning across the Snakefile - e.g. always
+use `sample` consistently to refer to a sample identifier, or `accession` to
+refer to a database ID. This makes reading the
+Snakefile easier!
 
 One interesting addendum: because wildcards are local to each rule, you
 are free to match different parts of patterns in different rules!
@@ -176,9 +198,9 @@ See "Mixing and matching wildcards", below.
     
 Within the `input:` and `output:` blocks in a rule, you can refer to
 wildcards directly by name. If you want to use wildcards in most other
-parts of a rule you need to use the `wildcards.` prefix; `params:`
-blocks are the only exception (see
-[`params:` blocks and `{params}`](params-blocks.md). Here, `wildcards`
+parts of a rule you need to use the `wildcards` prefix; the only
+exception to this rule is `params:` blocks (see the chapter
+[`params:` blocks and `{params}`](params-blocks.md)). Here, `wildcards`
 is a _namespace_, which we will talk about more later. (CTB)
 
 Consider this Snakefile:
@@ -207,7 +229,7 @@ rule analyze_this:
     shell: "analyze {input} -o {output} --title {wildcards.a}"
 ```
 
-### Wildcards match greedily, unless constrained
+### Wildcards match as broadly as possible, unless constrained in some way
 
 Wildcard pattern matching chooses the _longest possible_ match to
 _any_ characters, which can result in slightly confusing
@@ -231,9 +253,9 @@ where `{suffix}` is reduced down to a single character, `e`, and
 
 Two simple rules for wildcard matching are:
 * all wildcards must match at least one character.
-* after that, wildcards will match greedily: each wildcard will match everything it can before the next wildcard is considered.
+* after that, wildcards will match _greedily_: each wildcard will match everything it can before the next wildcard is considered.
 
-Therefore, it's good practice to use
+This is why it's good practice to use
 [wildcard constraints](../reference/wildcard-constraints.md) to limit
 wildcard matching.  See "Constraining wildcards to avoid
 subdirectories and/or periods", below, for some examples, and see the
@@ -269,7 +291,7 @@ somewhat error prone:
   
 Snakemake provides several features that can help with these issues. You
 can load the list of files from a text file or spreadsheet, or get the
-list directly from the directoriy using `glob_wildcards`; and you can
+list directly from the directory using `glob_wildcards`; and you can
 use `expand` to rename them in bulk. Read on for some examples!
 
 ```admonish info title='Why is this better than using gzip directly?'
@@ -312,7 +334,6 @@ And, fourth, the Snakefile approach will let you rename the output
 files in interesting ways - with `gzip -k original/*`, you're stuck
 with the original filenames.  This is a feature we will explore in the
 next subsection!
-
 ```
 
 ### Renaming files by prefix using `glob_wildcards`
@@ -487,9 +508,9 @@ Here, the wildcard is _only_ in the output filename, not in the
 input filename. The wildcard value is used by snakemake to determine
 how to fill in the number of lines for `head` to select from the file!
 
-This can be really useful for generating files with many different
-parameters to a particular shell command - "parameter sweeps".  More
-about this later.
+This can be really useful for generating files from giving many different
+parameters to a shell command - what we call "parameter sweeps".  More
+about this later!
 
 <!-- See CTB XXX.
 
@@ -500,8 +521,8 @@ CTB link to:
 
 ## How to think about wildcards
 
-Wildcards (together with `expand` and `glob_wildcards`) are perhaps
-the single most powerful feature in snakemake: they permit generic
+Wildcards (together with `expand` and `glob_wildcards`) are among
+the most powerful and useful features in snakemake: they permit generic
 application of rules to an arbitrary number of files, based entirely
 on simple patterns.
 

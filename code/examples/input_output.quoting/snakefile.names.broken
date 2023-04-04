@@ -1,0 +1,12 @@
+# expect_fail
+
+# ANCHOR: content
+rule example:
+   input:
+       a="file1.txt",
+   output:
+       a="output file1.txt",
+   shell: """
+       echo first input is {input.z:q}
+   """
+# ANCHOR_END: content

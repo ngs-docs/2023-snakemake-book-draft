@@ -1,0 +1,27 @@
+# targets: -n
+
+# ANCHOR: content
+FASTQ_FILES = glob_wildcards("{sample}.fastq")
+
+rule all:
+    input:
+        "multiqc_report.html"
+
+rule multiqc:
+    input:
+        expand("{sample}_fastqc.html", sample=FASTQ_FILES.sample)
+    output:
+        "multiqc_report.html"
+    shell: """
+        multiqc . --filename {output:q} -f
+    """
+
+rule fastqc_raw:
+    input:
+        "{sample}.fastq"
+    output:
+        "{sample}_fastqc.html", "{sample}_fastqc.zip"
+    shell: """
+       fastqc {input:q}
+    """
+# ANCHOR_END: content

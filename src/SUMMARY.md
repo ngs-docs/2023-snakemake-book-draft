@@ -1,6 +1,7 @@
 # Summary
 
 - [Introduction](./intro.md)
+- [Acknowledgements](./acknowledgements.md)
 
 - [Section 1 - A Stepwise Introduction to Snakemake](./chapter_0.md)
   - [Chapter 1 - snakemake runs programs for you!](./chapter_1.md)
@@ -22,7 +23,7 @@
   - [Using wildcards to generalize your rules](./beginner+/wildcards.md)
   - [`params:` blocks and `{params}`](./beginner+/params-blocks.md)
   - [Using `expand` to generate filenames](./beginner+/expand.md))
-  - [Debugging snakemake workflows](./beginner+/debugging.md)
+  - [Techniques for debugging snakemake workflows](./beginner+/debugging.md)
   - [Basic syntax rules for Snakefiles](./beginner+/syntax.md)
   - [Visualizing your workflow](./beginner+/visualizing.md)
   - [String formatting "minilanguage"](./beginner+/string-formatting.md)

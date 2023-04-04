@@ -1,3 +1,5 @@
+# ignore
+
 rule all:
     input: "aggregate.txt"
 
