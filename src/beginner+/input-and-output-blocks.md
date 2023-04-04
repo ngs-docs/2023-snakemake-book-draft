@@ -152,7 +152,7 @@ reads. Consider the following Snakefile:
 ../../code/examples/input_output.megahit/Snakefile:content}}
 ```
 
-n the shell command here, we need to supply the input reads as two
+In the shell command here, we need to supply the input reads as two
 separate files, with `-1` before one and `-2` before the second. As a
 bonus the resulting shell command is very readable!
 
