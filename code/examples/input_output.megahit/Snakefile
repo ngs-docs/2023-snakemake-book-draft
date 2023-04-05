@@ -1,6 +1,7 @@
 # targets: -n
 
 # ANCHOR: content
+
 rule all:
     input:
         "assembly_out"
