@@ -21,4 +21,4 @@ print(prefix_and_dir_only)
 assert set(all_files) == { 'file1.subset', 'file1', 'subdir/file2', 'subdir/file2.subset', 'subdir/nested/file3' }
 assert set(this_dir_files) == { 'file1.subset', 'file1' }
 assert set(prefix_only) == { 'file1', 'subdir/file2', 'subdir/nested/file3' }
-assert prefix_and_dir_only == ['file1', 'xxx']
+assert prefix_and_dir_only == ['file1']
