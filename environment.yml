@@ -1,0 +1,12 @@
+name: mdbook
+channels:
+ - conda-forge
+ - bioconda
+ - defaults
+dependencies:
+ - mamba
+ - make
+ - rust
+ - snakemake-minimal==7.25.0
+ - pandas
+ - sourmash
