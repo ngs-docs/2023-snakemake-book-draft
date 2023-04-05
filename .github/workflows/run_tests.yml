@@ -66,6 +66,9 @@ jobs:
         shell: bash -el {0}
         run: conda list
 
+      - name: Cache cargo env
+        uses: Swatinem/rust-cache@v2      
+
       - name: Install mdbook
         shell: bash -el {0}
         run: cargo install mdbook mdbook-admonish mdbook-cmdrun
