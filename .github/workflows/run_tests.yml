@@ -66,10 +66,10 @@ jobs:
         shell: bash -el {0}
         run: conda list
 
-      - run: Install mdbook
+      - name: Install mdbook
         shell: bash -el {0}
         run: cargo install mdbook mdbook-admonish mdbook-cmdrun
 
-      - run: tests
+      - name: Run tests
         shell: bash -el {0}
         run: make test
