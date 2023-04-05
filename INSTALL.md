@@ -34,3 +34,9 @@ cargo install mdbook mdbook-admonish mdbook-cmdrun
 ```
 make
 ```
+
+## Run snakemake tests
+
+```
+make test
+```
