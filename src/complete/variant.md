@@ -73,3 +73,4 @@ Discuss:
 * make this testable w/-n!
 * make this testable w/big!
 * remove test tags!
+* how to interpret output/what to do
