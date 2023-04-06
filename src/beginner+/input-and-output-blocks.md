@@ -148,8 +148,8 @@ filenames need to be specified as optional arguments.  One such
 program is the `megahit` assembler when it runs on paired-end input
 reads. Consider the following Snakefile:
 
-```python {{#include
-../../code/examples/input_output.megahit/Snakefile:content}}
+```python
+{{#include ../../code/examples/input_output.megahit/Snakefile:content}}
 ```
 
 In the shell command here, we need to supply the input reads as two
