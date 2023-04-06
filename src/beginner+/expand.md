@@ -216,22 +216,27 @@ Here, `config.yml` is a YAML file. @CTB.
 We introduced the `glob_wildcards` command briefly in the
 [chapter on wildcards](wildcards.md#renaming-files-by-prefix-using-glob_wildcards):
 `glob_wildcards` does pattern matching on files _actually present
-in the directory_.  This is a particularly
-convenient way to get a list of accessions, although it can be
-dangerous to use this. In particular, it is easy to accidentally
-delete a file and not notice that a sample is missing! For that reason
-we suggest providing an independent list of files to load for
-many situations.
+in the directory_.
+
+Here's a Snakefile that uses `glob_wildcards` to get the four accessions
+from the actual filenames:
+```python
+{{#include ../../code/examples/load_idlist_from/snakefile.glob_wildcards}}
+```
+
+This is a particularly convenient way to get a list of accessions,
+although it can be dangerous to use this. In particular, it is easy to
+accidentally delete a file and not notice that a sample is missing!
+For that reason we suggest providing an independent list of files to
+load for many situations.
 
 CTB:
+* note acc vs accession in snakefile
+* note repeated pattern for INPUT but not OUTPUT - but glob_wildcards vs wildcard vs expand!
 * discuss use case for samples; recipes?
 * link to warning/reiterate warning
 * "We discuss glob_wildcards more ..." - constraints, wildcards, where else? Is there more to it?
 * cover multiext too?
-
-```python
-{{#include ../../code/examples/load_idlist_from/snakefile.glob_wildcards}}
-```
 
 ## Wildcards and `expand` - some closing thoughts
 
