@@ -56,11 +56,11 @@ If you were to use `-S {output}` here, you would end up producing a file
 
 ## Params blocks also support a variety of other functionality
 
-CTB
+CTB expand here or later.
 
-* bring in config values
+* bring in config values (mentioned in expand)
 * [input functions & params functions](../recipes/params-functions.md)
-* use comma-separated value for megahit as example? e.g. -r 1,2,3
+* use comma-separated value for megahit as example? e.g. -r 1,2,3.
 
 ## Links and references:
 

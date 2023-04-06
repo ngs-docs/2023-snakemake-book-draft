@@ -87,19 +87,15 @@ This will produce the following eight filenames:
 "GCF_008423265.1.fna.gz.sig",
 "GCF_008423265.1.fna.gz"
 ```
-by building every combination of `acc` and `extension`.
+by substituting _all possible_ combinations of `acc` and `extension` into
+the provided pattern.
 
 ## Generating _all_ combinations vs _pairwise_ combinations
 
 As we saw above, with multiple patterns, `expand` will generate all
 possible combinations: that is,
 ```python
-X = [1, 2, 3]
-Y = ['a', 'b', 'c']
-
-rule all:
-   input:
-      expand('{x}.by.{y}', x=X, y=Y)
+{{#include ../../code/examples/expand.combine/Snakefile:combinatorial}}
 ```
 will generate 9 filenames: `1.by.a`, `1.by.b`, `1.by.c`, `2.by.a`, etc.
 And if you added a third pattern to the `expand` string, `expand` would
@@ -126,16 +122,21 @@ by using `zip` instead - something we did in one of the
 Here's an example:
 
 ```python
-X = [1, 2, 3]
-Y = ['a', 'b', 'c']
-
-rule all:
-   input:
-      expand('{x}.by.{y}', zip, x=X, y=Y)
+{{#include ../../code/examples/expand.combine/Snakefile:zip}}
 ```
 which will now generate only three filenames: `1.by.a`, `2.by.b`, and `3.by.c`.
 
-CTB: mention what will happen if lists are different lengths.
+The big caveat here is that `zip` will create an output list the length
+of the shortest input list - so if you give it one list of three elements,
+and one list of two elements, it will only use two elements from the first
+list.
+
+For example, in the `expand` in this `Snakefile`,
+```python
+{{#include ../../code/examples/expand.combine/Snakefile:zip_short}}
+```
+only `1.by.a` and `2.by.b` will be generated, as there is no partner
+for `3` in the second list.
 
 For more information see the [snakemake documentation on using zip instead of product](https://snakemake.readthedocs.io/en/stable/project_info/faq.html#i-don-t-want-expand-to-use-the-product-of-every-wildcard-what-can-i-do).
 
@@ -169,7 +170,7 @@ ID:
 {{#include ../../code/examples/load_idlist_from/snakefile.load_txt}}
 ```
 
-and build sourmash signatures for it each accession.
+and build sourmash signatures for each accession.
 
 ### Loading a specific column from a CSV file
 
@@ -208,31 +209,29 @@ which is used by the following Snakefile:
 {{#include ../../code/examples/load_idlist_from/snakefile.use_config}}
 ```
 
+Here, `config.yml` is a YAML file. @CTB.
+
 ### Using `glob_wildcards` to load IDs or accessions from a set of files
 
 We introduced the `glob_wildcards` command briefly in the
 [chapter on wildcards](wildcards.md#renaming-files-by-prefix-using-glob_wildcards):
 `glob_wildcards` does pattern matching on files _actually present
-in the directory_.  This is a particularly convenient way to get a list
-of accessions, although it is dangerous to use this because Reasons.
+in the directory_.  This is a particularly
+convenient way to get a list of accessions, although it can be
+dangerous to use this. In particular, it is easy to accidentally
+delete a file and not notice that a sample is missing! For that reason
+we suggest providing an independent list of files to load for
+many situations.
 
-CTB discuss use case for samples; recipes?
-CTB link to warning/reiterate warning
-CTB "We discuss glob_wildcards more ..." - constraints, wildcards, where else? Is there more to it?
+CTB:
+* discuss use case for samples; recipes?
+* link to warning/reiterate warning
+* "We discuss glob_wildcards more ..." - constraints, wildcards, where else? Is there more to it?
+* cover multiext too?
 
 ```python
 {{#include ../../code/examples/load_idlist_from/snakefile.glob_wildcards}}
 ```
-
-### Example combining `glob_wildcards`.
-
-link to example in wildcards, renaming recipe in recipes?
-
-A common pattern: get list of files and 
-
-CTB note: link to Python list docs.
-CTB note: cover multiext too?
-CTB note: cover options to expand? see snakemake.io code
 
 ## Wildcards and `expand` - some closing thoughts
 

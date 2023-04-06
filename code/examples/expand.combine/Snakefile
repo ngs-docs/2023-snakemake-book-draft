@@ -1,0 +1,38 @@
+# targets: -n all_product all_zip all_zip_short
+
+# ANCHOR: combinatorial
+X = [1, 2, 3]
+Y = ['a', 'b', 'c']
+
+rule all_product:
+   input:
+      expand('{x}.by.{y}', x=X, y=Y)
+# ANCHOR_END: combinatorial
+
+assert len(expand('{x}.by.{y}', x=X, y=Y)) == 9
+
+# ANCHOR: zip
+X = [1, 2, 3]
+Y = ['a', 'b', 'c']
+
+rule all_zip:
+   input:
+      expand('{x}.by.{y}', zip, x=X, y=Y)
+# ANCHOR_END: zip
+
+assert len(expand('{x}.by.{y}', zip, x=X, y=Y)) == 3
+
+# ANCHOR: zip_short
+X = [1, 2, 3]
+Y = ['a', 'b']
+
+rule all_zip_short:
+   input:
+      expand('{x}.by.{y}', zip, x=X, y=Y)
+# ANCHOR_END: zip_short
+
+assert len(expand('{x}.by.{y}', zip, x=X, y=Y)) == 2
+
+rule create:
+    output:
+        touch("{x}.by.{y}")
