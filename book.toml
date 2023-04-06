@@ -22,4 +22,4 @@ additional-css = ["./extra/mdbook-admonish.css"]
 [preprocessor.cmdrun]
 
 [build]
-extra-watch-dirs = ['code']
+extra-watch-dirs = ['code', 'scripts']

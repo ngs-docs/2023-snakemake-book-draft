@@ -42,7 +42,7 @@ How do you get snakemake to avoid rerunning rules?
 
 We can do that by telling snakemake what we expect the output to be by adding an `output:` block in front of the shell block:
 ```diff
-<!-- cmdrun ../diff-trunc.py ../code/section1/simple1.snakefile ../code/section1/simple2.snakefile -->
+<!-- cmdrun ../scripts/diff-trunc.py ../code/section1/simple1.snakefile ../code/section1/simple2.snakefile -->
 ```
 and now when we run `snakemake -j 1` once, it will run the commands; but when we run it again, it will say, "Nothing to be done (all requested files are present and up to date)."
 

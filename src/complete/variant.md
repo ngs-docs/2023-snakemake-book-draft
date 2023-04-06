@@ -18,7 +18,7 @@ TODO:
 - add final version of Snakefile!
 
 ```python
-<!-- cmdrun ../../remove-anchor.py ../../code/complete/variant/Snakefile -->
+<!-- cmdrun ../../scripts/remove-anchor.py ../../code/complete/variant/Snakefile -->
 ```
 
 ## The annotated Snakefile
@@ -32,13 +32,13 @@ TODO:
 * -o {output} makes sure that the right filename is respected.
 
 ```python
-{{#include ../..//code/complete/variant/Snakefile:download}}
+{{#include ../../code/complete/variant/Snakefile:download}}
 ```
 
 ## Doing the initial mapping
 
 ```python
-{{#include ../..//code/complete/variant/Snakefile:mapping}}
+{{#include ../../code/complete/variant/Snakefile:mapping}}
 ```
 
 ## Converting SAM to BAM
@@ -50,7 +50,7 @@ TODO:
 * sort is more CPU intensive, could use multithreading here
 
 ```python
-{{#include ../..//code/complete/variant/Snakefile:sam_to_bam}}
+{{#include ../../code/complete/variant/Snakefile:sam_to_bam}}
 ```
 
 ## Calling variants
@@ -64,11 +64,12 @@ Discuss:
 * view converts bcf to vcf
 
 ```python
-{{#include ../..//code/complete/variant/Snakefile:call}}
+{{#include ../../code/complete/variant/Snakefile:call}}
 ```
 
 ## More TODO:
 
-* add additional 
+* add additional files!
 * make this testable w/-n!
 * make this testable w/big!
+* remove test tags!
