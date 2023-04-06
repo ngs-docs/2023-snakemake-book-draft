@@ -100,6 +100,9 @@ def main():
         print(f"Saving run script to '{args.output}'", file=sys.stderr)
         output = open(args.output, 'wt')
 
+        print("#! /bin/bash", file=output)
+        print("failed=0", file=output)
+
         for snakefile in snakefiles:
             targets = ''
             metadata = read_snakefile_metadata(snakefile)
@@ -116,18 +119,18 @@ def main():
 
             if metadata['expect_fail']:
                 print(f"""
-cd {dirname}
-snakemake -s {filename} -j 1 -p {targets} >& {filename}.out && echo fail {snakefile} || echo success
+cd {dirname} > /dev/null
+snakemake -s {filename} -j 1 -p {targets} >& {filename}.out && {{ echo fail {snakefile}; failed=1; }} || echo success {snakefile}
 cd - > /dev/null
 """, file=output)
             else:
                 print(f"""
-cd {dirname}
-snakemake -s {filename} -j 1 -p {targets} >& {filename}.out && echo success || echo fail {snakefile}
+cd {dirname} > /dev/null
+snakemake -s {filename} -j 1 -p {targets} >& {filename}.out && echo success {snakefile} || {{ echo fail {snakefile}; failed=1; }}
 cd - > /dev/null
 """, file=output)
 
-        print("exit 0", file=output)
+        print("exit $failed", file=output)
 
 
 if __name__ == '__main__':

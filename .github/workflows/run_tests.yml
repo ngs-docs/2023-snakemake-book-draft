@@ -1,0 +1,78 @@
+name: Run tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python: [3.9]
+
+    name: Python on ${{ matrix.python }}
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      # per https://github.com/conda-incubator/setup-miniconda#caching-environments
+      - name: Setup Mambaforge
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniforge-variant: Mambaforge
+          miniforge-version: latest
+          activate-environment: anaconda-client-env
+          use-mamba: true
+          python-version: ${{ matrix.python }}
+
+      - name: Get Date
+        id: get-date
+        run: echo "today=$(/bin/date -u '+%Y%m%d')" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Cache Conda env
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.CONDA }}/envs
+          key:
+            conda-${{ runner.os }}--${{ runner.arch }}--${{
+            steps.get-date.outputs.today }}-${{
+            hashFiles('environment-caching.yml') }}-${{ env.CACHE_NUMBER
+            }}
+        env:
+          # Increase this value to reset cache if etc/example-environment.yml has not changed
+          CACHE_NUMBER: 0
+          id: cache
+
+      - name: Update environment
+        run:
+          mamba env update -n anaconda-client-env -f environment.yml
+        if: steps.cache.outputs.cache-hit != 'true'
+
+      - name: Show Python version
+        shell: bash -el {0}
+        run: python -V
+
+      - name: Conda info
+        shell: bash -el {0}
+        run: conda info
+
+      - name: Conda list
+        shell: bash -el {0}
+        run: conda list
+
+      - name: Cache cargo env
+        uses: Swatinem/rust-cache@v2      
+
+      - name: Install mdbook
+        shell: bash -el {0}
+        run: cargo install mdbook mdbook-admonish mdbook-cmdrun
+
+      - name: Run tests
+        shell: bash -el {0}
+        run: make test
