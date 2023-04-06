@@ -104,7 +104,7 @@ However, **we don't recommend this** because it's fragile. If you
 change the order of the inputs and outputs, or add new inputs, you
 have to go through and adjust the indices to match.  Relying on the
 number and position of indices in a list is error prone and will make
-changing your Snakefile harder!
+your Snakefile harder to change later on!
 
 ## Using keywords for input and output files
 
@@ -167,7 +167,7 @@ that is called to _generate_ a value dynamically, as below -
 ```
 
 When asked to create `output5.txt`, this rule will look for
-`file25.txt`.
+`file25.txt` as an input.
 
 Since this functionality relies on knowledge of
 [wildcards](wildcards.md) as well as some knowledge of Python, we will

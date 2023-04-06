@@ -27,7 +27,7 @@ will be error prone: you are likely to want to add, remove, or edit
 elements of the list, and you will need to change it in multiple
 places.
 
-In [Chapter 9](../chapter_9.md), we showed how to chang this to a list of the
+In [Chapter 9](../chapter_9.md), we showed how to change this to a list of the
 accessions at the top of the Snakefile and then used a function called
 `expand` to generate the list:
 ```python
@@ -193,9 +193,9 @@ Snakefile to load `accessions.csv`:
 
 ### Loading from the config file
 
-Snakemake also supports the use of configuration files, where the snakefile
-supplies the name of the a default config file, which can be overridden
-on the command line.
+Snakemake also supports the use of configuration files, where the
+snakefile supplies the name of the a default config file (which can in
+turn be overridden on the command line.)
 
 A config file can also be a good place to put accessions. Consider:
 

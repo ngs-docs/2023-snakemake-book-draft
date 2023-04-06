@@ -13,8 +13,8 @@ proceed past that rule.
 Frequently, shell commands need to take parameters other than
 filenames, and these parameters may be values that can or should be
 calculated by snakemake.  Therefore, snakemake also supports a
-`params:` block that can be used to provide strings that are _not_
-filenames in the shell block, colloquially known as parameters. As
+`params:` block that can be used to provide parameter strings that are _not_
+filenames in the shell block. As
 you'll see below, these can be used for a variety of purposes,
 including user-configurable parameters as well as parameters that can
 be calculated automatically by Python code.
