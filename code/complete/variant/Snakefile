@@ -1,3 +1,7 @@
+# ignore
+
+# ANCHOR: download
+
 rule download_data:
     output: "SRR2584857_1.fastq.gz"
     shell: """
@@ -9,6 +13,10 @@ rule download_genome:
     shell:
         "curl -JLO https://osf.io/8sm92/download -o {output}"
 
+# ANCHOR_END: download
+
+# ANCHOR: mapping
+
 rule map_reads:
     input:
         reads="SRR2584857_1.fastq.gz",
@@ -17,6 +25,10 @@ rule map_reads:
     shell: """
         minimap2 -ax sr {input.ref} {input.reads} > {output}
     """
+
+# ANCHOR_END: mapping
+
+# ANCHOR: sam_to_bam
 
 rule sam_to_bam:
     input: "SRR2584857_1.x.ecoli-rel606.sam",
@@ -31,6 +43,10 @@ rule sort_bam:
     shell: """
         samtools sort {input} > {output}
     """
+
+# ANCHOR_END: sam_to_bam
+
+# ANCHOR: call
 
 rule call_variants:
     input:
@@ -47,3 +63,5 @@ rule call_variants:
         bcftools call -mv -Ob {output.pileup} -o {output.bcf}
         bcftools view {output.bcf} > {output.vcf}
     """
+
+# ANCHOR_END: call
