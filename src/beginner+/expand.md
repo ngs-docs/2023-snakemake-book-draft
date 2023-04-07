@@ -176,11 +176,9 @@ and build sourmash signatures for each accession.
 
 If instead of a text file you have a CSV file with multiple columns,
 and the IDs to load are all in one column, you can use the Python
-pandas library to read in the CSV. In the code below,
+[pandas library](https://pandas.pydata.org/) to read in the CSV. In the code below,
 `pandas.read_csv` loads the CSV into a pandas DataFrame object, and then
 we select the `accession` column and use that as an iterable.
-
-@CTB link to pandas.
 
 File `accessions.csv`:
 ```csv
@@ -209,7 +207,9 @@ which is used by the following Snakefile:
 {{#include ../../code/examples/load_idlist_from/snakefile.use_config}}
 ```
 
-Here, `config.yml` is a YAML file. @CTB.
+Here, `config.yml` is a [YAML file](https://en.wikipedia.org/wiki/YAML),
+which is a human-readable format that can also be read by computers.
+We will talk about config files later! CTB.
 
 ### Using `glob_wildcards` to load IDs or accessions from a set of files
 
