@@ -23,6 +23,7 @@
   - [Using wildcards to generalize your rules](./beginner+/wildcards.md)
   - [`params:` blocks and `{params}`](./beginner+/params-blocks.md)
   - [Using `expand` to generate filenames](./beginner+/expand.md))
+  - [Running rules and choosing targets from the command line](./beginner+/targets.md)
   - [Techniques for debugging snakemake workflows](./beginner+/debugging.md)
   - [Basic syntax rules for Snakefiles](./beginner+/syntax.md)
   - [Visualizing your workflow](./beginner+/visualizing.md)
