@@ -3,6 +3,21 @@
 The way that you specify targets in snakemake is simple, but can lead
 to a lot of complexity in its details.
 
+* key points: what you put on the command line - "targets" - is mirror image
+  of snakefile
+* snakefile organization can/should reflect
+* difference between rule names and filenames; wildcard rules and not.
+
+USe language: "pseudo-rules "
+
+snakemake docs link:
+https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#targets-and-aggregation
+
+set:
+```
+default_target: True
+```
+
 ## Default targets
 
 If you just run `snakemake -j 1`, snakemake will run the first rule it
