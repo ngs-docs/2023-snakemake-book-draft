@@ -25,7 +25,7 @@ Summary: once you're done with syntax errors:
 
 ### Whitespace and indentation errors: finding, fixing, and avoiding them.
 
-Use a good editor, e.g. vscode or some othe text editor. Put it in snakemake
+Use a good editor, e.g. vscode or some other text editor. Put it in snakemake
 mode or Python mode (spaces etc.)
 
 ### Syntax errors, newlines, and quoting.
@@ -33,8 +33,6 @@ mode or Python mode (spaces etc.)
 triple quotes vs single quotes
 
 ## Debugging Snakefile workflow declarations/specifications @@
-
-wildcard errors
 
 ### `MissingInputException`
 
@@ -113,6 +111,25 @@ shared network file system from jobs running on multiple machines. If
 you're running snakemake on a single machine, this should never be a
 problem! We'll defer discussion of this until later.
 
+### `WorkflowError` and wildcards
+
+Another common error is a `WorfklowError: Target rules may not contain
+wildcards." This occurs when snakemake is asked to run a rule that contains
+wildcards.
+
+Consider:
+```python
+{{#include ../../code/examples/errors.simple-fail/snakefile.missing-output}}
+```
+
+which generates:
+```
+WorkflowError:
+Target rules may not contain wildcards. Please specify concrete files or a rule without wildcards at the command line, or have a rule without wildcards at the very top of your workflow (e.g. the typical "rule all" which just collects all results you want to generate in the end).
+```
+
+See [Using wildcards to generalize your rules](wildcards.md#all-wildcards-used-in-a-rule-must-match-to-wildcards-in-the-output-block) and [Targets](targets.md) for more information.
+
 ## Debugging running snakemake workflows 
 
 
@@ -126,7 +143,7 @@ problem! We'll defer discussion of this until later.
 
 ## Running all the rules you can with `-k/--keep-going`
 
-Snakemake has a slighly confusing presentation of error messages from
+Snakemake has a slightly confusing presentation of error messages from
 shell commands: the messages appear _above_ the notification that the
 rule failed
 
@@ -210,10 +227,10 @@ is somewhat lacking.
 There is no single way to _fix_ this problem, unfortunately. A few
 general strategies include:
 
-* switching to a system with more memory, or (if you are using a queueing
+* switching to a system with more memory, or (if you are using a queuing
   system like slurm) requesting more memory for your job.
 * if you are using a program that asks you to specify an amount of
   memory to use (e.g. some assemblers, or any java program), you can
   decrease the amount of memory you request on the command line.
 * you can also decrease the size of the dataset you are using, perhaps
-  by subdiving it or subsampling @@.
+  by subdividing it or sub-sampling @@.
