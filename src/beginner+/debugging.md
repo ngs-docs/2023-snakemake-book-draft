@@ -1,25 +1,51 @@
 # Techniques for debugging workflow execution (and fixing problems!)
 
+There are three common stages of debugging you'll encounter when
+creating or modifying a snakemake workflow.
+
+First, you'll have syntax errors caused by mismatched indentation and
+whitespace, as well as mismatched quotes. These errors will prevent
+snakemake from reading your Snakefile.
+
+Second, you'll find problems connecting rules and filling in wildcards.
+This will prevent snakemake from executing any jobs.
+
+And third, you'll have actual execution errors that make specific rules
+or jobs fail. These errors will prevent your workflow from finishing.
+
+This chapter will cover the sources of the most common types of
+these errors, and will also provide tips and techniques for avoiding or
+fixing many of them.
+
 * intermediate targets
 * debug-dag
 * logs
 * print in Snakefile (use file=)
 * finding and reading error messages - silence, killed, etc.
-* the most common error messages - wildcards, output missing, input missing, whitespace/tabs etc
-* using -n
-* using -k
 * running in single-CPU mode
 * whitespace
 * filling in wildcards
 
-## A short check list
+## After the syntax errors: running your snakemake workflow
 
-Summary: once you're done with syntax errors:
+CTB: make this an admonish block.
 
-* run with `-n`
-* run with `-j 1`
-* run with `-p`
-* run just the rules you're interested in (see [targets](targets.md))
+Here is a short list of tactics to use when trying to debug execution
+errors in your snakemake workflow -- that is, _after_ you resolve
+any syntax errors preventing snakemake from reading the Snakefile.
+
+1. Run snakemake with `-n/--dry-run`, and inspect the output. This will
+   tell you if the snakemake workflow will run the rules and produce
+   the output you're actually interested in.
+2. Run snakemake with `-j/--cores 1`. This will run your jobs one after
+   the other, in serial mode; this will make the output from snakemake
+   jobs less confusing, because only one job will be running at a time.
+3. Run snakemake with `-p/--printshellcmds`. This will print out the
+   actual shell commands that are being run.
+4. Run just the rules you're trying to debug by specifying either the
+   rule name or a filename on the command line (see
+   [Running rules and choosing targets from the command line](targets.md)
+   for more information).
 
 ## Finding, fixing, and avoiding syntax errors.
 
@@ -31,6 +57,8 @@ mode or Python mode (spaces etc.)
 ### Syntax errors, newlines, and quoting.
 
 triple quotes vs single quotes
+
+deleting lines.
 
 ## Debugging Snakefile workflow declarations/specifications @@
 
