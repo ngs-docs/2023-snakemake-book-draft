@@ -3,3 +3,4 @@
 rule example:
     input: "{name}.input"
     output: "{name}.output"
+    shell: "cp {input} {output}"

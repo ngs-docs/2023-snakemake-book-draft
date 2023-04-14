@@ -26,9 +26,8 @@ fixing many of them.
 * whitespace
 * filling in wildcards
 
-## After the syntax errors: running your snakemake workflow
 
-CTB: make this an admonish block.
+~~~admonish info title='After the syntax errors: running your snakemake workflow'
 
 Here is a short list of tactics to use when trying to debug execution
 errors in your snakemake workflow -- that is, _after_ you resolve
@@ -46,6 +45,8 @@ any syntax errors preventing snakemake from reading the Snakefile.
    rule name or a filename on the command line (see
    [Running rules and choosing targets from the command line](targets.md)
    for more information).
+
+~~~
 
 ## Finding, fixing, and avoiding syntax errors.
 
@@ -147,7 +148,7 @@ wildcards.
 
 Consider:
 ```python
-{{#include ../../code/examples/errors.simple-fail/snakefile.missing-output}}
+{{#include ../../code/examples/errors.simple-fail/snakefile.wildcard-error}}
 ```
 
 which generates:
@@ -156,7 +157,34 @@ WorkflowError:
 Target rules may not contain wildcards. Please specify concrete files or a rule without wildcards at the command line, or have a rule without wildcards at the very top of your workflow (e.g. the typical "rule all" which just collects all results you want to generate in the end).
 ```
 
-See [Using wildcards to generalize your rules](wildcards.md#all-wildcards-used-in-a-rule-must-match-to-wildcards-in-the-output-block) and [Targets](targets.md) for more information.
+This error occurs in this case because there is only one rule in the
+snakemake workflow, and when werun `snakemake` it will default to
+running that rule as its target. However, that rule uses
+[wildcards](wildcards.md) in its output block, and hence cannot be a
+target.
+
+You can also encounter this error when you specify a rule name explicitly;
+if the rule you ask snakemake to run by name contains a wildcard in its
+output block, you can't run the rule directly - you have to give it a
+filename that snakemake can use to infer the wildcard.
+
+In either case, the solution is to either ask snakemake to build a
+filename, or give snakemake a target that does not include
+wildcards. For example, if the file `XYZ.input` existed in the
+directory, here we could either specify `XYZ.output` on the command
+line, or we could write a new default rule that specified the name
+`XYZ.output` as a pseudo-target:
+```python
+rule all:
+    input:
+        "XYZ.output"
+```
+Either solution has the effect of providing the rule `example` with a value
+to substitute for the wildcard `name`.
+
+See
+[Using wildcards to generalize your rules](wildcards.md#all-wildcards-used-in-a-rule-must-match-to-wildcards-in-the-output-block)
+and [Targets](targets.md) for more information.
 
 ## Debugging running snakemake workflows 
 
