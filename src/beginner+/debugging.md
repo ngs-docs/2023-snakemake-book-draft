@@ -26,6 +26,8 @@ fixing many of them.
 * whitespace
 * filling in wildcards
 
+@@ suggested procedure after syntax: first run with -j big and -k; then everything left will be blocking errors.
+
 
 ~~~admonish info title='After the syntax errors: running your snakemake workflow'
 
