@@ -25,6 +25,9 @@ fixing many of them.
 * running in single-CPU mode
 * whitespace
 * filling in wildcards
+* use `--until` to specify a rule to go to
+* focus on one wildcard at a time
+* thought: maybe do a thing where we really dig into a set of debugging?
 
 @@ suggested procedure after syntax: first run with -j big and -k; then everything left will be blocking errors.
 
