@@ -1,5 +1,37 @@
 # Techniques for debugging workflow execution (and fixing problems!)
 
+## Some initial words of wisdom
+
+Debugging complex computer situations is an art -- or, at least, it is
+not easily systematized.  There are guidelines and even rules to
+debugging, but no single procedure or approach that is guaranteed to work.
+
+This chapter focuses on *how to debug* snakemake workflows. The odds
+are that you're reading this chapter because you are trying hard to
+get something to work. Heck, you're probably only reading this
+sentence because you're desperate.
+
+Below are the most useful pieces of advice we can give you about debugging
+at this point in your snakemake journey.
+
+First, simplify the workflow as much as possible so that it is fast to
+run. For example, reduce the number of samples to 1 or 2 (@@)
+and subsample input files so that they are small. This will make it
+faster to run and decrease the time between testing your results.
+
+Second, focus on one rule at a time. Run each rule, one by one, until
+you find one that is not doing what you want it to do. Then focus on
+fixing that. This will provide you with an increasingly solid path
+through the snakemake rules.
+
+Third, print out the commands being run (using `-p`) and examine
+the wildcards in the snakemake output carefully. Make sure both the
+commands and the wildcard values are what you expect. Find the first
+rule where they aren't and fix that rule. This will ensure that
+at each stage, your wildcards are ...
+
+## The three stages of snakemake debugging
+
 There are three common stages of debugging you'll encounter when
 creating or modifying a snakemake workflow.
 
