@@ -28,6 +28,7 @@
   - [Basic syntax rules for Snakefiles](./beginner+/syntax.md)
   - [Visualizing your workflow](./beginner+/visualizing.md)
   - [String formatting "minilanguage"](./beginner+/string-formatting.md)
+  - [Using configuration files](./beginner+/config.md)
 
 - [Section 4 - Snakemake Patterns and Recipes](./section_4.md)
   - [Subsampling FASTQ files](./recipes/subsampling-files.md)
