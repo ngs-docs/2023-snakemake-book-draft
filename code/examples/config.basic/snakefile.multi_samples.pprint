@@ -1,0 +1,23 @@
+import pprint
+
+configfile: "config.multi_samples.yml"
+
+# print out the config dictionary
+print('config is:')
+pprint.pprint(config)
+
+SAMPLES=config['samples']
+
+# print out the SAMPLES variable
+print('SAMPLES is:')
+pprint.pprint(SAMPLES)
+
+rule all:
+    input:
+        expand("one_sample.{s}.out", s=SAMPLES)
+
+rule make_single_sample_wc:
+    output:
+        "one_sample.{s}.out"
+    shell:
+        "touch {output}"

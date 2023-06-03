@@ -79,11 +79,32 @@ note, might want to have some info on parameters in output files.
 
 ## Providing config variables on the command line
 
-## Debugging config files
+## Debugging config files and displaying the `config` dictionary
+
+I frequently want to know what the config actually is when running
+snakemake. A convenient way to do this is to use `pprint` -
+for example, see `snakefile.multi_samples.pprint`,
+```python
+{{#include ../../code/examples/config.basic/snakefile.multi_samples.pprint}}
+```
+which produces the following output:
+```
+config is:
+{'samples': ['DEF_789', 'GHI_234', 'JKL_567']}
+SAMPLES is:
+['DEF_789', 'GHI_234', 'JKL_567']
+```
+
+CTB: explain python dict/list, or link.
+
+CTB: link to debugging
+
+CTB: talk about -n, and Python vs ...
 
 print, pprint
 keys
-defaults
+
+using .get/providing defaults
 
 ## Recap
 
