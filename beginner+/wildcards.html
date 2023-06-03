@@ -1,0 +1,698 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Using wildcards to generalize your rules - An Introduction to Snakemake for Bioinformatics</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href=".././extra/mdbook-admonish.css">
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../acknowledgements.html"><strong aria-hidden="true">2.</strong> Acknowledgements</a></li><li class="chapter-item expanded "><a href="../chapter_0.html"><strong aria-hidden="true">3.</strong> Section 1 - A Stepwise Introduction to Snakemake</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../chapter_1.html"><strong aria-hidden="true">3.1.</strong> Chapter 1 - snakemake runs programs for you!</a></li><li class="chapter-item expanded "><a href="../chapter_2.html"><strong aria-hidden="true">3.2.</strong> Chapter 2 - snakemake connects rules for you!</a></li><li class="chapter-item expanded "><a href="../chapter_3.html"><strong aria-hidden="true">3.3.</strong> Chapter 3 - snakemake helps you avoid redundancy!</a></li></ol></li><li class="chapter-item expanded "><a href="../section_2.html"><strong aria-hidden="true">4.</strong> Section 2 - Building an even more useful Snakefile</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../chapter_4.html"><strong aria-hidden="true">4.1.</strong> Chapter 4 - running rules in parallel</a></li><li class="chapter-item expanded "><a href="../chapter_5.html"><strong aria-hidden="true">4.2.</strong> Chapter 5 - visualizing workflows</a></li><li class="chapter-item expanded "><a href="../chapter_6.html"><strong aria-hidden="true">4.3.</strong> Chapter 6 - using wildcards to make rules more generic</a></li><li class="chapter-item expanded "><a href="../chapter_7.html"><strong aria-hidden="true">4.4.</strong> Chapter 7 - giving snakemake filenames instead of rule names</a></li><li class="chapter-item expanded "><a href="../chapter_8.html"><strong aria-hidden="true">4.5.</strong> Chapter 8 - adding new genomes</a></li><li class="chapter-item expanded "><a href="../chapter_9.html"><strong aria-hidden="true">4.6.</strong> Chapter 9 - using expand to make filenames</a></li><li class="chapter-item expanded "><a href="../chapter_10.html"><strong aria-hidden="true">4.7.</strong> Chapter 10 - using default rules</a></li><li class="chapter-item expanded "><a href="../chapter_11.html"><strong aria-hidden="true">4.8.</strong> Chapter 11 - our final Snakefile - review and discussion</a></li></ol></li><li class="chapter-item expanded "><a href="../section_3.html"><strong aria-hidden="true">5.</strong> Section 3 - Beyond Your First Snakefile</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../beginner+/input-and-output-blocks.html"><strong aria-hidden="true">5.1.</strong> input: and output: blocks</a></li><li class="chapter-item expanded "><a href="../beginner+/wildcards.html" class="active"><strong aria-hidden="true">5.2.</strong> Using wildcards to generalize your rules</a></li><li class="chapter-item expanded "><a href="../beginner+/params-blocks.html"><strong aria-hidden="true">5.3.</strong> params: blocks and {params}</a></li><li class="chapter-item expanded "><a href="../beginner+/expand.html"><strong aria-hidden="true">5.4.</strong> Using expand to generate filenames</a></li><li class="chapter-item expanded "><a href="../beginner+/targets.html"><strong aria-hidden="true">5.5.</strong> Running rules and choosing targets from the command line</a></li><li class="chapter-item expanded "><a href="../beginner+/debugging.html"><strong aria-hidden="true">5.6.</strong> Techniques for debugging snakemake workflows</a></li><li class="chapter-item expanded "><a href="../beginner+/syntax.html"><strong aria-hidden="true">5.7.</strong> Basic syntax rules for Snakefiles</a></li><li class="chapter-item expanded "><a href="../beginner+/visualizing.html"><strong aria-hidden="true">5.8.</strong> Visualizing your workflow</a></li><li class="chapter-item expanded "><a href="../beginner+/string-formatting.html"><strong aria-hidden="true">5.9.</strong> String formatting "minilanguage"</a></li><li class="chapter-item expanded "><a href="../beginner+/config.html"><strong aria-hidden="true">5.10.</strong> Using configuration files</a></li></ol></li><li class="chapter-item expanded "><a href="../section_4.html"><strong aria-hidden="true">6.</strong> Section 4 - Snakemake Patterns and Recipes</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../recipes/subsampling-files.html"><strong aria-hidden="true">6.1.</strong> Subsampling FASTQ files</a></li><li class="chapter-item expanded "><a href="../recipes/splitting-files.html"><strong aria-hidden="true">6.2.</strong> Using split to split up files</a></li><li class="chapter-item expanded "><a href="../recipes/replacing-for.html"><strong aria-hidden="true">6.3.</strong> Applying one rule to to many files - replacing for loops in shell scripts</a></li><li class="chapter-item expanded "><a href="../recipes/never-fail-me.html"><strong aria-hidden="true">6.4.</strong> Never fail me - how to make shell commands always succeed</a></li><li class="chapter-item expanded "><a href="../recipes/params-functions.html"><strong aria-hidden="true">6.5.</strong> Subsetting FASTQ files to a fixed number of records</a></li></ol></li><li class="chapter-item expanded "><a href="../section_5.html"><strong aria-hidden="true">7.</strong> Section 5 - Advanced Features</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../advanced/parallel.html"><strong aria-hidden="true">7.1.</strong> Beyond -j - parallelizing snakemake</a></li><li class="chapter-item expanded "><a href="../advanced/resources.html"><strong aria-hidden="true">7.2.</strong> Resource constraints and job management</a></li></ol></li><li class="chapter-item expanded "><a href="../section_6.html"><strong aria-hidden="true">8.</strong> Section 6 - A Reference Guide for Snakemake Features</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../reference/wildcard-constraints.html"><strong aria-hidden="true">8.1.</strong> Wildcard constraints</a></li><li class="chapter-item expanded "><a href="../reference/namespaces.html"><strong aria-hidden="true">8.2.</strong> Namespaces</a></li></ol></li><li class="chapter-item expanded "><a href="../appendix/index.html"><strong aria-hidden="true">9.</strong> Appendix</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../appendix/unix-shell.html"><strong aria-hidden="true">9.1.</strong> UNIX shell basics</a></li><li class="chapter-item expanded "><a href="../appendix/conda-and-mamba.html"><strong aria-hidden="true">9.2.</strong> Getting started with conda and mamba</a></li><li class="chapter-item expanded "><a href="../appendix/git-basics.html"><strong aria-hidden="true">9.3.</strong> Git basics</a></li><li class="chapter-item expanded "><a href="../appendix/shell-scripts.html"><strong aria-hidden="true">9.4.</strong> UNIX and scripting: executing text files</a></li><li class="chapter-item expanded "><a href="../appendix/workflow-friendly-software.html"><strong aria-hidden="true">9.5.</strong> Writing software that is workflow-friendly</a></li><li class="chapter-item expanded "><a href="../appendix/python.html"><strong aria-hidden="true">9.6.</strong> Python basics</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">An Introduction to Snakemake for Bioinformatics</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="using-wildcards-to-generalize-your-rules"><a class="header" href="#using-wildcards-to-generalize-your-rules">Using wildcards to generalize your rules</a></h1>
+<p>As we showed in <a href="../chapter_6.html">Chapter 6</a>, when you have repeated
+substrings between input and output, you can extract them into
+wildcards - going from a rule that makes specific outputs from
+specific inputs into rules that operate on any input/output sets that
+match a pattern.</p>
+<p>For example, the following code creates a single sourmash sketch
+from a specific genome:</p>
+<pre><code class="language-python">rule sketch_genomes_1:
+    input:
+        &quot;genomes/GCF_000017325.1.fna.gz&quot;,
+    output:
+        &quot;GCF_000017325.1.fna.gz.sig&quot;,
+    shell: &quot;&quot;&quot;
+        sourmash sketch dna -p k=31 {input} --name-from-first
+    &quot;&quot;&quot;
+</code></pre>
+<p>While this rule does the same for <em>any</em> genome ending in <code>.fna.gz</code>!</p>
+<pre><code class="language-python">rule sketch_genomes_1:
+    input:
+        &quot;genomes/{accession}.fna.gz&quot;,
+    output:
+        &quot;{accession}.fna.gz.sig&quot;,
+    shell: &quot;&quot;&quot;
+        sourmash sketch dna -p k=31 {input} \
+            --name-from-first
+    &quot;&quot;&quot;
+</code></pre>
+<p>Here, <code>{accession}</code> is a wildcard that &quot;fills in&quot; as needed for any filename
+that is under the <code>genomes/</code> directory and ends with <code>.fna.gz</code>.</p>
+<p>Snakemake uses simple <em>pattern matching</em> to determine the value of
+<code>{accession}</code> - if asked for a filename ending in <code>.fna.gz.sig</code>, snakemake
+takes the prefix, and then looks for the matching input file
+<code>genomes/{accession}.fna.gz</code>, and fills in <code>{input}</code> accordingly.</p>
+<p>Wildcards are incredibly useful and using them means that in many
+cases you can write a single rule that can generate hundreds or
+thousands of files! However, there are a few subtleties to consider. In
+this chapter, we're going to cover the most important of those
+subtleties, and provide links where you can learn more.</p>
+<h2 id="rules-for-wildcards"><a class="header" href="#rules-for-wildcards">Rules for wildcards</a></h2>
+<p>First, let's go through some basic rules for wildcards.</p>
+<h3 id="wildcards-are-determined-by-the-desired-output"><a class="header" href="#wildcards-are-determined-by-the-desired-output">Wildcards are determined by the desired output</a></h3>
+<p>The first and most important rule of wildcards is this: snakemake
+fills in wildcard values based on the filename it is asked to produce.</p>
+<p>Consider the following rule:</p>
+<pre><code class="language-python"># targets: result1.a.out
+
+rule a:
+    output: &quot;{prefix}.a.out&quot;
+    shell: &quot;touch {output}&quot;
+</code></pre>
+<p>The wildcard in the output block will match <em>any</em> file that ends with
+<code>.a.out</code>, and the associated shell command will create it!  This is both
+powerful and constraining: you can create any file with the suffix
+<code>.a.out</code> - but you also need to <em>ask</em> for the file to be created.</p>
+<p>This means that in order to make use of this rule, there needs to be
+another rule that has a file that ends in <code>.a.out</code> as a required
+input.  (You can also explicitly ask for such a file on the command
+line. CTB doc link.)  There's no other way for snakemake to guess at
+the value of the wildcard: snakemake follows the dictum that explicit
+is better than implicit, and it will not guess at what files you want
+created.</p>
+<p>For example, the above rule could be paired with another rule that asks
+for one or more filenames ending in <code>.a.out</code>:</p>
+<pre><code class="language-python">rule make_me_a_file:
+    input:
+        &quot;result1.a.out&quot;,
+        &quot;result2.a.out&quot;,
+</code></pre>
+<p>This also means that once you put a wildcard in a
+rule, you can no longer run that rule by the rule name - you have to
+ask for a filename, instead.  If you try to run a rule that contains a
+wildcard but don't tell it what filename you want to create, you'll get:</p>
+<pre><code>Target rules may not contain wildcards.
+</code></pre>
+<p>One common way to work with wildcard rules is to have another rule that
+uses <code>expand</code> to construct a list of desired files; this is often paired
+with a <code>glob_wildcards</code> to load a list of wildcards. See the recipe for
+renaming files by prefix, below, or the chapter on
+<a href="expand.html">Using <code>expand</code> to generate filenames</a>.</p>
+<h3 id="all-wildcards-used-in-a-rule-must-match-to-wildcards-in-the-output-block"><a class="header" href="#all-wildcards-used-in-a-rule-must-match-to-wildcards-in-the-output-block">All wildcards used in a rule must match to wildcards in the <code>output:</code> block</a></h3>
+<p>snakemake uses the wildcards in the <code>output:</code> block to fill in the wildcards
+elsewhere in the rule, so you can only use wildcards mentioned in one or
+more outputs.</p>
+<p>This means that every wildcard used in the <code>input:</code> block needs to be
+present in <code>output:</code>.  Consider the following example, where the input
+block contains a wildcard <code>analysis</code> that is not used in the output
+block:</p>
+<pre><code class="language-python"># this does not work:
+
+rule analyze_sample:
+    input: &quot;{sample}.x.{analysis}.in&quot;
+    output: &quot;{sample}.out&quot;
+</code></pre>
+<p>This doesn't work because snakemake doesn't know how to fill in the
+<code>analysis</code> wildcard in the <em>input</em> block, and you will get an error
+that says so:</p>
+<pre><code>WildcardError in line 1 of ...
+Wildcards in input files cannot be determined from output files:
+'analysis'
+</code></pre>
+<p>Think about it this way: if this worked, there could be multiple
+different input files for the same output, and snakemake would
+have no way to choose which input file to use to produce the
+desired output; moreover, the outputs would presumably be different
+depending on the inputs used, leading to irreproducibility.</p>
+<p>Every wildcard in the <code>input:</code> block does need to be in the <code>output:</code>
+block.  However, there are situations where wildcards in the <code>output:</code>
+block do <em>not</em> need to be in the <code>input:</code> block - see &quot;Using wildcards
+to determine parameters to use in the shell block&quot;, below, on using
+wildcards to determine parameters for the shell block!</p>
+<h3 id="wildcards-are-local-to-each-rule"><a class="header" href="#wildcards-are-local-to-each-rule">Wildcards are local to each rule</a></h3>
+<p>Wildcard names only need to match <em>within</em> a rule block; wildcards are not
+shared between rules. You <em>can</em> use the same
+wildcard names in multiple rules for consistency and readability, but
+snakemake will treat them as independent wildcards, and wildcard values
+will not be shared.</p>
+<p>So, for example, these two rules use the same wildcard <code>a</code> in both rules -</p>
+<pre><code class="language-python">rule analyze_this:
+    input: &quot;{a}.first.txt&quot;
+    output: &quot;{a}.second.txt&quot;
+
+rule analyze_that:
+    input: &quot;{a}.second.txt&quot;
+    output: &quot;{a}.third.txt&quot;
+</code></pre>
+<p>but this is equivalent to these next two rules, which use <em>different</em>
+wildcards <code>a</code> and <code>b</code> in the separate rules:</p>
+<pre><code class="language-python">rule analyze_this:
+    input: &quot;{a}.first.txt&quot;
+    output: &quot;{a}.second.txt&quot;
+
+rule analyze_that:
+    input: &quot;{b}.second.txt&quot;
+    #        ^-- different - 'b' instead of 'a' in the first rule
+    output: &quot;{b}.third.txt&quot;
+    #        ^-- different - 'b' instead of 'a' in the first rule
+</code></pre>
+<p>There is one exception to the rule that wildcards are independent:
+when you use 
+<a href="../reference/wildcard-constraints.html">global wildcard constraints</a> to
+limit wildcard matching by wildcard name, the constraints
+apply across all uses of that wildcard name in the Snakefile.
+However, the <em>values</em> of the wildcards remain independent - it's just
+the constraint that is shared by all wildcards of the same name.</p>
+<!-- CTB: fix link to point directly to global wildcard constraints. -->
+<p>While wildcards are independent in values and you could use different
+wildcards in every rule, it is a good convention to choose wildcards
+to have the same semantic meaning across the Snakefile - e.g. always
+use <code>sample</code> consistently to refer to a sample identifier, or <code>accession</code> to
+refer to a database ID. This makes reading the
+Snakefile easier!</p>
+<p>One interesting addendum: because wildcards are local to each rule, you
+are free to match different parts of patterns in different rules!
+See &quot;Mixing and matching wildcards&quot;, below.</p>
+<h3 id="the-wildcard-namespace-is-implicitly-available-in-input-and-output-blocks-but-not-in-other-blocks"><a class="header" href="#the-wildcard-namespace-is-implicitly-available-in-input-and-output-blocks-but-not-in-other-blocks">The wildcard namespace is implicitly available in <code>input:</code> and <code>output:</code> blocks, but not in other blocks.</a></h3>
+<p>Within the <code>input:</code> and <code>output:</code> blocks in a rule, you can refer to
+wildcards directly by name. If you want to use wildcards in most other
+parts of a rule you need to use the <code>wildcards</code> prefix; the only
+exception to this rule is <code>params:</code> blocks (see the chapter
+<a href="params-blocks.html"><code>params:</code> blocks and <code>{params}</code></a>). Here, <code>wildcards</code>
+is a <em>namespace</em>, which we will talk about more later. (CTB)</p>
+<p>Consider this Snakefile:</p>
+<pre><code class="language-python"># this does not work:
+
+rule analyze_this:
+    input: &quot;{a}.first.txt&quot;
+    output: &quot;{a}.second.txt&quot;
+    shell: &quot;analyze {input} -o {output} --title {a}&quot;
+</code></pre>
+<p>Here you will get an error,</p>
+<pre><code>NameError: The name 'a' is unknown in this context. Did you mean 'wildcards.a'?
+</code></pre>
+<p>As the error suggests, you need to use <code>wildcards.a</code> in
+the shell block instead:</p>
+<pre><code class="language-python">rule analyze_this:
+    input: &quot;{a}.first.txt&quot;
+    output: &quot;{a}.second.txt&quot;
+    shell: &quot;analyze {input} -o {output} --title {wildcards.a}&quot;
+</code></pre>
+<h3 id="wildcards-match-as-broadly-as-possible-unless-constrained-in-some-way"><a class="header" href="#wildcards-match-as-broadly-as-possible-unless-constrained-in-some-way">Wildcards match as broadly as possible, unless constrained in some way</a></h3>
+<p>Wildcard pattern matching chooses the <em>longest possible</em> match to
+<em>any</em> characters, which can result in slightly confusing
+behavior. Consider:</p>
+<pre><code class="language-python">rule all:
+    input:
+        &quot;x.y.z.gz&quot;
+
+rule something:
+    input: &quot;{prefix}.{suffix}.txt&quot;
+    output: &quot;{prefix}.{suffix}.gz&quot;
+    shell: &quot;gzip -c {input} &gt; {output}&quot;
+</code></pre>
+<p>In the <code>something</code> rule, for the desired output file <code>x.y.z.gz</code>,
+<code>{prefix}</code> will currently be <code>x.y</code> and <code>{suffix}</code> will be <code>z</code>.
+But it would be equally valid for <code>{prefix}</code> to be <code>x</code> and
+suffix to be <code>y.z</code>.</p>
+<p>A more extreme example shows the greedy matching even more clearly:</p>
+<pre><code class="language-python">rule all:
+    input:
+        &quot;longer_filename.gz&quot;
+
+rule something:
+    input: &quot;{prefix}{suffix}.txt&quot;
+    output: &quot;{prefix}{suffix}.gz&quot;
+    shell: &quot;gzip -c {input} &gt; {output}&quot;
+</code></pre>
+<p>where <code>{suffix}</code> is reduced down to a single character, <code>e</code>, and
+<code>{prefix}</code> is <code>longer_filenam</code>!</p>
+<p>Two simple rules for wildcard matching are:</p>
+<ul>
+<li>all wildcards must match at least one character.</li>
+<li>after that, wildcards will match <em>greedily</em>: each wildcard will match everything it can before the next wildcard is considered.</li>
+</ul>
+<p>This is why it's good practice to use
+<a href="../reference/wildcard-constraints.html">wildcard constraints</a> to limit
+wildcard matching.  See &quot;Constraining wildcards to avoid
+subdirectories and/or periods&quot;, below, for some examples, and see the
+<a href="../reference/wildcard-constraints.html">wildcard constraints</a> chapter
+for more details!</p>
+<h2 id="some-examples-of-wildcards"><a class="header" href="#some-examples-of-wildcards">Some examples of wildcards</a></h2>
+<h3 id="running-one-rule-on-many-files"><a class="header" href="#running-one-rule-on-many-files">Running one rule on many files</a></h3>
+<p>Wildcards can be used to run the same simple rule on many files - this is
+one of the simplest and most powerful uses for snakemake!</p>
+<p>Consider this Snakefile for compressing many files:</p>
+<pre><code class="language-python">rule all:
+    input:
+        &quot;compressed/F3D141_S207_L001_R1_001.fastq.gz&quot;,
+        &quot;compressed/F3D141_S207_L001_R2_001.fastq.gz&quot;,
+        &quot;compressed/F3D142_S208_L001_R1_001.fastq.gz&quot;,
+        &quot;compressed/F3D142_S208_L001_R2_001.fastq.gz&quot;
+
+rule gzip_file:
+    input:
+        &quot;original/{filename}&quot;
+    output:
+        &quot;compressed/{filename}.gz&quot;
+    shell:
+        &quot;gzip -c {input} &gt; {output}&quot;
+</code></pre>
+<p>This Snakefile specifies a list of compressed files that it wants produced,
+and relies on wildcards to do the pattern matching required to find the
+input files and fill in the shell block.</p>
+<p>See <a href="../recipes/replacing-for.html">Replacing for loops with Snakefiles</a>
+for more examples of this powerful pattern!</p>
+<p>That having been said, this Snakefile is inconvenient to write and is
+somewhat error prone:</p>
+<ul>
+<li>writing out the files individually is annoying if you have many of them!</li>
+<li>to generate the list of files, you have to hand-rename them, which is
+error prone!</li>
+</ul>
+<p>Snakemake provides several features that can help with these issues. You
+can load the list of files from a text file or spreadsheet, or get the
+list directly from the directory using <code>glob_wildcards</code>; and you can
+use <code>expand</code> to rename them in bulk. Read on for some examples!</p>
+<div id="admonition-why-is-this-better-than-using-gzip-directly" class="admonition info">
+<div class="admonition-title">
+<p>Why is this better than using gzip directly?</p>
+<p><a class="admonition-anchor-link" href="#admonition-why-is-this-better-than-using-gzip-directly"></a></p>
+</div>
+<div>
+<p>It is possible to accomplish the same task by using <code>gzip -k original/*</code>,
+although you'd have to move the files into their final location, too.</p>
+<p>How is using <code>gzip -k original/*</code> different from using snakemake? And
+is it better?</p>
+<p>First, while the results aren't different - both approaches will
+compress the set of input files, which is what you want! - the <code>gzip -k</code> command runs in <em>serial</em> and will not run in <em>parallel</em> - that is,
+gzip will by default compress one file at a time. The Snakefile will
+run the rule <code>gzip_file</code> <em>in parallel</em>, using as many processors as you
+specify with <code>-j</code>.  That means that if you had many, many such files -
+a common problem in bioinformatics! - the snakemake version could
+potentially run many times faster.</p>
+<p>Second, specifying many files on the command line with <code>gzip -k original/*</code> works with <code>gzip</code> but not with every shell command. Some
+commands only run on one file at a time; <code>gzip</code> just happens to work
+whether you give it one or many files. Many other programs do not work
+on multiple input files; e.g. the <code>fastp</code> program for preprocessing
+FASTQ files runs on one dataset at a time.  (It's also worth
+mentioning that snakemake gives you a way to flexibly write custom
+command lines; for some examples, see the chapter on
+<a href="input-and-output-blocks.html">Input and Output Blocks</a>.)</p>
+<p>Third, in the Snakefile we are being explicit about which files we
+expect to exist after the rules are run, while if we just ran <code>gzip -k original/*</code> we are asking the shell to compress every file in
+<code>original/</code>. If we accidentally deleted a file in the <code>original</code>
+subdirectory, then gzip would not know about it and would not
+complain - but snakemake would. This is a theme that will come up
+repeatedly - it's often safer to be really explicit about what files
+you expect, so that you can be alerted to possible mistakes.</p>
+<p>And, fourth, the Snakefile approach will let you rename the output
+files in interesting ways - with <code>gzip -k original/*</code>, you're stuck
+with the original filenames.  This is a feature we will explore in the
+next subsection!</p>
+</div>
+</div>
+<h3 id="renaming-files-by-prefix-using-glob_wildcards"><a class="header" href="#renaming-files-by-prefix-using-glob_wildcards">Renaming files by prefix using <code>glob_wildcards</code></a></h3>
+<p>Consider a set of files named like so:</p>
+<pre><code>F3D141_S207_L001_R1_001.fastq
+F3D141_S207_L001_R2_001.fastq
+</code></pre>
+<p>within the <code>original/</code> subdirectory.</p>
+<p>Now suppose you want to rename them all to get rid of the <code>_001</code> suffix
+before <code>.fastq</code>. This is very easy with wildcards!</p>
+<p>The below Snakefile uses <code>glob_wildcards</code> to load in a list of files from
+a directory and then make a copy of them with the new name under the
+<code>renamed/</code> subdirectory. Here, <code>glob_wildcards</code> extracts the <code>{sample}</code>
+pattern <em>from</em> the set of available files in the directory:</p>
+<pre><code class="language-python"># first, find matches to filenames of this form:
+files = glob_wildcards(&quot;original/{sample}_001.fastq&quot;)
+
+# next, specify the form of the name you want:
+rule all:
+    input:
+        expand(&quot;renamed/{sample}.fastq&quot;, sample=files.sample)
+
+# finally, give snakemake a recipe for going from inputs to outputs.
+rule rename:
+    input:
+        &quot;original/{sample}_001.fastq&quot;,
+    output:
+        &quot;renamed/{sample}.fastq&quot;
+    shell:
+        &quot;cp {input} {output}&quot;
+</code></pre>
+<p>This Snakefile also makes use of <code>expand</code> to rewrite the loaded list
+into the desired set of filenames. This means that we no
+longer have to write out the list of files ourselves - we can let
+snakemake do it! <code>expand</code> is discussed further in
+<a href="expand.html">Using expand to generate filenames</a>.</p>
+<p>Note that here you could do a <code>mv</code> instead of a <code>cp</code> and then
+<code>glob_wildcards</code> would no longer pick up the changed files after
+running.</p>
+<p>This Snakefile loads the list of files from the directory itself,
+which means that if an input file is accidentally deleted, snakemake
+won't complain. When renaming files, this is unlikely to cause
+problems; however, when running workflows, we recommend loading the
+list of samples from a text file or spreadsheet to avoid problems</p>
+<!-- (CTB point to a recipe). -->
+<p>Also note that this Snakefile will find and rename all files in
+<code>original/</code> as well as any subdirectories! This is because
+<code>glob_wildcards</code> by default includes all subdirectories. See
+the next section below to see how to use wildcard constraints to
+prevent loading from subdirectories.</p>
+<h3 id="constraining-wildcards-to-avoid-subdirectories-andor-periods"><a class="header" href="#constraining-wildcards-to-avoid-subdirectories-andor-periods">Constraining wildcards to avoid subdirectories and/or periods</a></h3>
+<p>Wildcards match to any string, including '/', and so <code>glob_wildcards</code>
+will automatically find files in subdirectories and will also &quot;stretch
+out&quot; to match common delimiters in filenames such as '.' and '-'. This
+is commonly referred to as &quot;greedy matching&quot; and it means that
+sometimes your wildcards will match to far more of a filename than you
+want!  You can limit wildcard matches using wildcard constraints.</p>
+<p>Two common wildcard constraints are shown below, separately and in
+combination.  The first constraint avoids files in subdirectories, and
+the second constraint avoids periods.</p>
+<pre><code class="language-python"># match all .txt files - no constraints
+all_files = glob_wildcards(&quot;{filename}.txt&quot;).filename
+
+# match all .txt files in this directory only - avoid /
+this_dir_files = glob_wildcards(&quot;{filename,[^/]+}.txt&quot;).filename
+
+# match all files with only a single period in their name - avoid .
+prefix_only = glob_wildcards(&quot;{filename,[^.]+}.txt&quot;).filename
+
+# match all files in this directory with only a single period in their name
+# avoid / and .
+prefix_and_dir_only = glob_wildcards(&quot;{filename,[^./]+}.txt&quot;).filename
+</code></pre>
+<p>See <a href="../reference/wildcard-constraints.html">Wildcard constraints</a> for more
+information and details.</p>
+<h2 id="advanced-wildcard-examples"><a class="header" href="#advanced-wildcard-examples">Advanced wildcard examples</a></h2>
+<h3 id="renaming-files-using-multiple-wildcards"><a class="header" href="#renaming-files-using-multiple-wildcards">Renaming files using multiple wildcards</a></h3>
+<p>The first renaming example above works really well when you want to change just
+the suffix of a file and can use a single wildcard, but if you want to
+do more complicated renaming you may have to use multiple wildcards.</p>
+<p>Consider the situation where you want to rename files from the form of
+<code>F3D141_S207_L001_R1_001.fastq</code> to <code>F3D141_S207_R1.fastq</code>. You can't
+do that with a single wildcard, unfortunately - but you can use two,
+like so:</p>
+<pre><code class="language-python"># first, find matches to filenames of this form:
+files = glob_wildcards(&quot;original/{sample}_L001_{r}_001.fastq&quot;)
+
+# next, specify the form of the name you want:
+rule all:
+    input:
+        expand(&quot;renamed/{sample}_{r}.fastq&quot;, zip,
+               sample=files.sample, r=files.r)
+
+# finally, give snakemake a recipe for going from inputs to outputs.
+rule rename:
+    input:
+        &quot;original/{sample}_L001_{r}_001.fastq&quot;,
+    output:
+        &quot;renamed/{sample}_{r}.fastq&quot;
+    shell:
+        &quot;cp {input} {output}&quot;
+</code></pre>
+<p>We're making use of three new features in this code:</p>
+<p>First, <code>glob_wildcards</code> is matching multiple wildcards, and
+puts the resulting values into a single result variable (here, <code>files</code>).</p>
+<p>Second, the matching values are placed in two ordered lists,
+<code>files.sample</code> and <code>files.r</code>, such that values extracted from file names
+match in pairs.</p>
+<p>Third, when we use <code>expand</code>, we're asking it to &quot;zip&quot; the two lists of
+wildcards together, rather than the default, which is to make all
+possible combinations with <code>product</code>.  See
+<a href="expand.html">Using expand to generate filenames</a> for more information
+on <code>zip</code> vs <code>product</code>.</p>
+<p>Also - as with the previous example, this Snakefile will find and
+rename all files in <code>original/</code> as well as any subdirectories!</p>
+<p>Links:</p>
+<ul>
+<li><a href="https://snakemake.readthedocs.io/en/stable/project_info/faq.html#i-don-t-want-expand-to-use-the-product-of-every-wildcard-what-can-i-do">snakemake documentation on using zip instead of product</a></li>
+</ul>
+<h3 id="mixing-and-matching-strings"><a class="header" href="#mixing-and-matching-strings">Mixing and matching strings</a></h3>
+<p>A somewhat nonintuitive (but also very useful) consequence of wildcards
+being local to rules is that you can do clever string matching to mix and
+match generic rules with more specific rules.</p>
+<p>Consider this Snakefile, in which we are mapping reads from multiple
+samples to multiple references (rule <code>map_reads_to_reference</code>) as well
+as converting SAM to BAM files:</p>
+<!-- CTB: transfer to functional Snakefile? -->
+<pre><code class="language-python">rule all:
+    input:
+        &quot;sample1.x.ecoli.bam&quot;,
+        &quot;sample2.x.shewanella.bam&quot;,
+        &quot;sample1.x.shewanella.bam&quot;
+
+rule map_reads_to_reference:
+    input:
+        reads=&quot;{sample}.fq&quot;,
+        reference=&quot;{genome}.fa&quot;,
+    output:
+        &quot;{reads}.x.{reference}.sam&quot;
+    shell: &quot;minimap2 -ax sr {input.reference} {input.reads} &gt; {output}&quot;
+        
+rule convert_sam_to_bam:
+    input:
+        &quot;{filename}.sam&quot;
+    output:
+        &quot;{filename}.bam&quot;
+    shell: &quot;samtools view -b {input} -o {output}
+</code></pre>
+<p>Here, snakemake is happily using different wildcards in each rule, and
+matching them to different parts of the pattern! So,</p>
+<ul>
+<li>
+<p>Rule <code>convert_sam_to_bam</code> will generically convert any SAM file to a BAM
+file based solely on the <code>.bam</code> and <code>.sam</code> suffixes.</p>
+</li>
+<li>
+<p>However, <code>map_reads_to_references</code> will only produce mapping files that
+match the pattern of <code>{sample}.x.{reference}</code>, which in turn depend on the
+existence of  <code>{reference}.fa</code> and <code>{sample}.fastq</code>.</p>
+</li>
+</ul>
+<p>This works because, ultimately, snakemake is just matching strings
+and does not &quot;know&quot; anything about the structure of the strings that
+it's matching. And it also doesn't remember wildcards across rules. So
+snakemake will happily match one set of wildcards in one rule, and a
+different set of wildcards in another rule!</p>
+<h3 id="using-wildcards-to-determine-parameters-to-use-in-the-shell-block"><a class="header" href="#using-wildcards-to-determine-parameters-to-use-in-the-shell-block">Using wildcards to determine parameters to use in the shell block.</a></h3>
+<p>You can also use wildcards to build rules that produce output files
+where the parameters used to <em>generate</em> the contents are based on the
+filename; for example, consider this example of generating subsets
+of FASTQ files:</p>
+<pre><code class="language-python">rule all:
+    input:
+        &quot;big.subset100.fastq&quot;
+
+rule subset:
+    input:
+        &quot;big.fastq&quot;
+    output:
+        &quot;big.subset{num_lines}.fastq&quot;
+    shell: &quot;&quot;&quot;
+        head -{wildcards.num_lines} {input} &gt; {output}
+    &quot;&quot;&quot;
+</code></pre>
+<p>Here, the wildcard is <em>only</em> in the output filename, not in the
+input filename. The wildcard value is used by snakemake to determine
+how to fill in the number of lines for <code>head</code> to select from the file!</p>
+<p>This can be really useful for generating files from giving many different
+parameters to a shell command - what we call &quot;parameter sweeps&quot;.  More
+about this later!</p>
+<!-- See CTB XXX.
+
+CTB link to:
+* params functions, params lambda?
+* parameter sweeps with this and expand
+-->
+<h2 id="how-to-think-about-wildcards"><a class="header" href="#how-to-think-about-wildcards">How to think about wildcards</a></h2>
+<p>Wildcards (together with <code>expand</code> and <code>glob_wildcards</code>) are among
+the most powerful and useful features in snakemake: they permit generic
+application of rules to an arbitrary number of files, based entirely
+on simple patterns.</p>
+<p>However, with that power comes quite a bit of complexity!</p>
+<p>Ultimately, wildcards are all about <em>strings</em> and <em>patterns</em>.
+Snakemake is using pattern matching to extract patterns from the
+desired output files, and then filling those matches in elsewhere in
+the rule. Most of the ensuing complexity comes avoiding ambiguity in
+matching and filling in patterns, along with the paired challenge of
+constructing all the names of the files you actually want to create.</p>
+<h2 id="additional-references"><a class="header" href="#additional-references">Additional references</a></h2>
+<p>See also: the
+<a href="https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#snakefiles-wildcards">snakemake docs on wildcards</a>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../beginner+/input-and-output-blocks.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../beginner+/params-blocks.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../beginner+/input-and-output-blocks.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../beginner+/params-blocks.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>

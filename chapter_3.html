@@ -1,0 +1,302 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter 3 - snakemake helps you avoid redundancy! - An Introduction to Snakemake for Bioinformatics</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="./extra/mdbook-admonish.css">
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="acknowledgements.html"><strong aria-hidden="true">2.</strong> Acknowledgements</a></li><li class="chapter-item expanded "><a href="chapter_0.html"><strong aria-hidden="true">3.</strong> Section 1 - A Stepwise Introduction to Snakemake</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">3.1.</strong> Chapter 1 - snakemake runs programs for you!</a></li><li class="chapter-item expanded "><a href="chapter_2.html"><strong aria-hidden="true">3.2.</strong> Chapter 2 - snakemake connects rules for you!</a></li><li class="chapter-item expanded "><a href="chapter_3.html" class="active"><strong aria-hidden="true">3.3.</strong> Chapter 3 - snakemake helps you avoid redundancy!</a></li></ol></li><li class="chapter-item expanded "><a href="section_2.html"><strong aria-hidden="true">4.</strong> Section 2 - Building an even more useful Snakefile</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_4.html"><strong aria-hidden="true">4.1.</strong> Chapter 4 - running rules in parallel</a></li><li class="chapter-item expanded "><a href="chapter_5.html"><strong aria-hidden="true">4.2.</strong> Chapter 5 - visualizing workflows</a></li><li class="chapter-item expanded "><a href="chapter_6.html"><strong aria-hidden="true">4.3.</strong> Chapter 6 - using wildcards to make rules more generic</a></li><li class="chapter-item expanded "><a href="chapter_7.html"><strong aria-hidden="true">4.4.</strong> Chapter 7 - giving snakemake filenames instead of rule names</a></li><li class="chapter-item expanded "><a href="chapter_8.html"><strong aria-hidden="true">4.5.</strong> Chapter 8 - adding new genomes</a></li><li class="chapter-item expanded "><a href="chapter_9.html"><strong aria-hidden="true">4.6.</strong> Chapter 9 - using expand to make filenames</a></li><li class="chapter-item expanded "><a href="chapter_10.html"><strong aria-hidden="true">4.7.</strong> Chapter 10 - using default rules</a></li><li class="chapter-item expanded "><a href="chapter_11.html"><strong aria-hidden="true">4.8.</strong> Chapter 11 - our final Snakefile - review and discussion</a></li></ol></li><li class="chapter-item expanded "><a href="section_3.html"><strong aria-hidden="true">5.</strong> Section 3 - Beyond Your First Snakefile</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="beginner+/input-and-output-blocks.html"><strong aria-hidden="true">5.1.</strong> input: and output: blocks</a></li><li class="chapter-item expanded "><a href="beginner+/wildcards.html"><strong aria-hidden="true">5.2.</strong> Using wildcards to generalize your rules</a></li><li class="chapter-item expanded "><a href="beginner+/params-blocks.html"><strong aria-hidden="true">5.3.</strong> params: blocks and {params}</a></li><li class="chapter-item expanded "><a href="beginner+/expand.html"><strong aria-hidden="true">5.4.</strong> Using expand to generate filenames</a></li><li class="chapter-item expanded "><a href="beginner+/targets.html"><strong aria-hidden="true">5.5.</strong> Running rules and choosing targets from the command line</a></li><li class="chapter-item expanded "><a href="beginner+/debugging.html"><strong aria-hidden="true">5.6.</strong> Techniques for debugging snakemake workflows</a></li><li class="chapter-item expanded "><a href="beginner+/syntax.html"><strong aria-hidden="true">5.7.</strong> Basic syntax rules for Snakefiles</a></li><li class="chapter-item expanded "><a href="beginner+/visualizing.html"><strong aria-hidden="true">5.8.</strong> Visualizing your workflow</a></li><li class="chapter-item expanded "><a href="beginner+/string-formatting.html"><strong aria-hidden="true">5.9.</strong> String formatting "minilanguage"</a></li><li class="chapter-item expanded "><a href="beginner+/config.html"><strong aria-hidden="true">5.10.</strong> Using configuration files</a></li></ol></li><li class="chapter-item expanded "><a href="section_4.html"><strong aria-hidden="true">6.</strong> Section 4 - Snakemake Patterns and Recipes</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="recipes/subsampling-files.html"><strong aria-hidden="true">6.1.</strong> Subsampling FASTQ files</a></li><li class="chapter-item expanded "><a href="recipes/splitting-files.html"><strong aria-hidden="true">6.2.</strong> Using split to split up files</a></li><li class="chapter-item expanded "><a href="recipes/replacing-for.html"><strong aria-hidden="true">6.3.</strong> Applying one rule to to many files - replacing for loops in shell scripts</a></li><li class="chapter-item expanded "><a href="recipes/never-fail-me.html"><strong aria-hidden="true">6.4.</strong> Never fail me - how to make shell commands always succeed</a></li><li class="chapter-item expanded "><a href="recipes/params-functions.html"><strong aria-hidden="true">6.5.</strong> Subsetting FASTQ files to a fixed number of records</a></li></ol></li><li class="chapter-item expanded "><a href="section_5.html"><strong aria-hidden="true">7.</strong> Section 5 - Advanced Features</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="advanced/parallel.html"><strong aria-hidden="true">7.1.</strong> Beyond -j - parallelizing snakemake</a></li><li class="chapter-item expanded "><a href="advanced/resources.html"><strong aria-hidden="true">7.2.</strong> Resource constraints and job management</a></li></ol></li><li class="chapter-item expanded "><a href="section_6.html"><strong aria-hidden="true">8.</strong> Section 6 - A Reference Guide for Snakemake Features</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="reference/wildcard-constraints.html"><strong aria-hidden="true">8.1.</strong> Wildcard constraints</a></li><li class="chapter-item expanded "><a href="reference/namespaces.html"><strong aria-hidden="true">8.2.</strong> Namespaces</a></li></ol></li><li class="chapter-item expanded "><a href="appendix/index.html"><strong aria-hidden="true">9.</strong> Appendix</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="appendix/unix-shell.html"><strong aria-hidden="true">9.1.</strong> UNIX shell basics</a></li><li class="chapter-item expanded "><a href="appendix/conda-and-mamba.html"><strong aria-hidden="true">9.2.</strong> Getting started with conda and mamba</a></li><li class="chapter-item expanded "><a href="appendix/git-basics.html"><strong aria-hidden="true">9.3.</strong> Git basics</a></li><li class="chapter-item expanded "><a href="appendix/shell-scripts.html"><strong aria-hidden="true">9.4.</strong> UNIX and scripting: executing text files</a></li><li class="chapter-item expanded "><a href="appendix/workflow-friendly-software.html"><strong aria-hidden="true">9.5.</strong> Writing software that is workflow-friendly</a></li><li class="chapter-item expanded "><a href="appendix/python.html"><strong aria-hidden="true">9.6.</strong> Python basics</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">An Introduction to Snakemake for Bioinformatics</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="chapter-3---snakemake-helps-you-avoid-redundancy"><a class="header" href="#chapter-3---snakemake-helps-you-avoid-redundancy">Chapter 3 - snakemake helps you avoid redundancy!</a></h1>
+<h2 id="avoiding-repeated-filenames-by-using-input-and-output"><a class="header" href="#avoiding-repeated-filenames-by-using-input-and-output">Avoiding repeated filenames by using <code>{input}</code> and <code>{output}</code></a></h2>
+<p>If you look at the previous Snakefile, you'll see a few repeated filenames - in particular, rule <code>compare_genomes</code> has three filenames in the input block and then repeats them in the shell block, and <code>compare.mat</code> is repeated several times in both <code>compare_genomes</code> and <code>plot_genomes</code>.</p>
+<p>We can tell snakemake to reuse filenames by using <code>{input}</code> and <code>{output}</code>. The <code>{</code> and <code>}</code> tell snakemake to interpret these not as literal strings but as template variables that should be replaced with the value of <code>input</code> and <code>output</code>.</p>
+<p>Let's give it a try!</p>
+<pre><code class="language-python">rule sketch_genomes:
+    output:
+        &quot;GCF_000017325.1.fna.gz.sig&quot;,
+        &quot;GCF_000020225.1.fna.gz.sig&quot;,
+        &quot;GCF_000021665.1.fna.gz.sig&quot;
+    shell: &quot;&quot;&quot;
+        sourmash sketch dna -p k=31 genomes/*.fna.gz --name-from-first
+    &quot;&quot;&quot;
+
+rule compare_genomes:
+    input:
+        &quot;GCF_000017325.1.fna.gz.sig&quot;,
+        &quot;GCF_000020225.1.fna.gz.sig&quot;,
+        &quot;GCF_000021665.1.fna.gz.sig&quot;
+    output:
+        &quot;compare.mat&quot;
+    shell: &quot;&quot;&quot;
+        sourmash compare {input} -o {output}
+    &quot;&quot;&quot;
+
+rule plot_comparison:
+    message: &quot;compare all input genomes using sourmash&quot;
+    input:
+        &quot;compare.mat&quot;
+    output:
+        &quot;compare.mat.matrix.png&quot;
+    shell: &quot;&quot;&quot;
+        sourmash plot {input}
+    &quot;&quot;&quot;
+
+</code></pre>
+<p>This approach not only involves less typing in the first place, but also makes it so that you only have to edit filenames in one place. This avoids mistakes caused by adding or changing filenames in one place and not another place - a mistake I've made plenty of times!</p>
+<h2 id="snakemake-makes-it-easy-to-rerun-workflows"><a class="header" href="#snakemake-makes-it-easy-to-rerun-workflows">snakemake makes it easy to rerun workflows!</a></h2>
+<p>It is common to want to rerun an entire workflow from scratch, to make sure that you're using the latest data files and software. Snakemake makes this easy!</p>
+<p>You can ask snakemake to clean up all the files that it knows how to generate - and <em>only</em> those files:</p>
+<pre><code class="language-shell">snakemake -j 1 plot_comparison --delete-all-output
+</code></pre>
+<p>which can then be followed by asking snakemake to regenerate the results:</p>
+<pre><code>snakemake -j 1 plot_comparison 
+</code></pre>
+<h2 id="snakemake-will-alert-you-to-missing-files-if-it-cant-make-them"><a class="header" href="#snakemake-will-alert-you-to-missing-files-if-it-cant-make-them">snakemake will alert you to missing files if it can't make them!</a></h2>
+<p>Suppose you add a new file that does not exist to <code>compare_genomes</code>:</p>
+<pre><code class="language-python">rule sketch_genomes:
+    output:
+        &quot;GCF_000017325.1.fna.gz.sig&quot;,
+        &quot;GCF_000020225.1.fna.gz.sig&quot;,
+        &quot;GCF_000021665.1.fna.gz.sig&quot;
+    shell: &quot;&quot;&quot;
+        sourmash sketch dna -p k=31 genomes/*.fna.gz --name-from-first
+    &quot;&quot;&quot;
+
+rule compare_genomes:
+    input:
+        &quot;GCF_000017325.1.fna.gz.sig&quot;,
+        &quot;GCF_000020225.1.fna.gz.sig&quot;,
+        &quot;GCF_000021665.1.fna.gz.sig&quot;,
+        &quot;does-not-exist.sig&quot;
+    output:
+        &quot;compare.mat&quot;
+    shell: &quot;&quot;&quot;
+        sourmash compare {input} GCF_000021665.1.sig -o {output}
+    &quot;&quot;&quot;
+
+rule plot_comparison:
+    message: &quot;compare all input genomes using sourmash&quot;
+    input:
+        &quot;compare.mat&quot;
+    output:
+        &quot;compare.mat.matrix.png&quot;
+    shell: &quot;&quot;&quot;
+        sourmash plot {input}
+    &quot;&quot;&quot;
+</code></pre>
+<p>Here, <code>does-not-exist.sig</code> doesn't exist, and we haven't given snakemake a rule to make it, either. What will snakemake do??</p>
+<p>It will complain, loudly and clearly! And it will do so before running anything.</p>
+<p>First, let's force the rule remove the output file that depends on the </p>
+<pre><code class="language-shell">rm compare.mat
+</code></pre>
+<p>and then run <code>snakemake -j 1</code>. You should see:</p>
+<pre><code>Missing input files for rule compare_genomes:
+    output: compare.mat
+    affected files:
+        does-not-exist.sig
+</code></pre>
+<p>This is exactly what you want - a clear indication of what is missing before your workflow runs.</p>
+<h1 id="next-steps"><a class="header" href="#next-steps">Next steps</a></h1>
+<p>We've introduced basic snakemake workflows, which give you a simple way to run shell commands in the right order. snakemake already offers a few nice improvements over running the shell commands by yourself or in a shell script -</p>
+<ul>
+<li>it doesn't run shell commands if you already have all the files you need</li>
+<li>it lets you avoid typing the same filenames over and over again</li>
+<li>it gives simple, clear errors when something fails</li>
+</ul>
+<p>While this functionality is nice, there are many more things we can do to improve the efficiency of our bioinformatics!</p>
+<p>In the next section, we'll explore </p>
+<ul>
+<li>writing more generic rules using <em>wildcards</em>;</li>
+<li>typing fewer filenames by using more templates;</li>
+<li>providing a list of default output files to produce;</li>
+<li>running commands in parallel on a single computer</li>
+<li>loading lists of filenames from spreadsheets</li>
+<li>configuring workflows with input files</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="section_2.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="section_2.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>
