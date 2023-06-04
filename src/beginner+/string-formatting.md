@@ -10,5 +10,6 @@ Maybe should add stuff about interacting in/with python?
 https://docs.python.org/3/library/string.html#formatspec
 
 * quoting
+* using quotes in string templates for keys (or, like, not doing that)
 * operations
 * escaping `{` and `}`

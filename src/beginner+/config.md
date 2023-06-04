@@ -75,9 +75,58 @@ provide different config files with different lists of samples!
 
 ## Specifying command line parameters in a config file
 
-note, might want to have some info on parameters in output files.
+Config files aren't limited to sample IDs - you can put pretty much
+anything in a config file.
 
-## Providing config variables on the command line
+Consider our `sourmash sketch` command from the workflow
+we developed in [Section 1](../chapter_0.md), where we compare genomes
+at a particular k-mer size. For example, from
+[Chapter 2](../chapter_2.md), we have:
+
+```python
+rule sketch_genomes:
+    output:
+       "GCF_000017325.1.fna.gz.sig",
+       "GCF_000020225.1.fna.gz.sig",
+       "GCF_000021665.1.fna.gz.sig"
+    shell: """
+        sourmash sketch dna -p k=31 genomes/*.fna.gz --name-from-first
+    """
+```
+
+Here, `sketch dna` is run with the parameter `-p k=31`, which sets the
+k-mer size for comparison to k=31. This is a prime candidate for a
+config file!
+
+Using [a params block](params.md) and a config file, we could rewrite this
+rule as 
+```python
+rule sketch_genomes:
+    output:
+       "GCF_000017325.1.fna.gz.sig",
+       "GCF_000020225.1.fna.gz.sig",
+       "GCF_000021665.1.fna.gz.sig",
+    params:
+        ksize=config['ksize'],
+    shell: """
+        sourmash sketch dna -p k={params.ksize} genomes/*.fna.gz --name-from-first
+    """
+```
+
+This has a few nice features:
+
+* the use of 'params' makes it clear to the reader that this is a parameter!
+* the k-mer size is configurable!
+
+CTB: check that it actually works with k=21!
+
+CTB: talk about config.get and int/type validation
+
+CTB: advanced usage: conditional parameters like output=pdf for compare.
+
+note/danger, might want to have some info on parameters in output file names...
+
+note/danger, talk about tradeoff b/t information in config file, vs information in snakefile - e.g. what programs to run, vs what parameters to use
 
 ## Debugging config files and displaying the `config` dictionary
 
@@ -99,12 +148,28 @@ CTB: explain python dict/list, or link.
 
 CTB: link to debugging
 
-CTB: talk about -n, and Python vs ...
+CTB: talk about -n, and Python statements vs rules...
 
 print, pprint
 keys
 
 using .get/providing defaults
+
+## Advanced usage
+
+### Providing config variables on the command line
+
+You can also set individual config variables on the command line:
+
+```
+snakemake -j 1 -s snakefile.one_sample -C sample=ZZZ_123
+```
+
+CTB: how to do this for lists; how to do this for multiple config variables.
+
+### Providing multiple config files
+
+`--configfiles`
 
 ## Recap
 
