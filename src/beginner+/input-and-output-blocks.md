@@ -1,5 +1,10 @@
 # `input:` and `output:` blocks
 
+@@ make a note somewhere that these are annotations, not directives,
+and that's why we suggest using `{output}`.
+
+@@ make a note saying that if it wants one output, it will run the rule.
+
 As we saw in [Chapter 2](../chapter_2.md), snakemake will automatically
 "chain" rules by connecting inputs to outputs. That is, snakemake
 will figure out _what to run_ in order to produce the desired output,

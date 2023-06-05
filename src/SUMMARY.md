@@ -23,10 +23,12 @@
   - [Using wildcards to generalize your rules](./beginner+/wildcards.md)
   - [`params:` blocks and `{params}`](./beginner+/params-blocks.md)
   - [Using `expand` to generate filenames](./beginner+/expand.md))
+  - [Running rules and choosing targets from the command line](./beginner+/targets.md)
   - [Techniques for debugging snakemake workflows](./beginner+/debugging.md)
   - [Basic syntax rules for Snakefiles](./beginner+/syntax.md)
   - [Visualizing your workflow](./beginner+/visualizing.md)
   - [String formatting "minilanguage"](./beginner+/string-formatting.md)
+  - [Using configuration files](./beginner+/config.md)
   
 - [Section 3b - complete examples](./section_3b.md)
   - [Variant calling](./complete/variant.md)
@@ -42,6 +44,7 @@
 
 - [Section 5 - Advanced Features](./section_5.md)
   - [Beyond `-j` - parallelizing snakemake](./advanced/parallel.md)
+  - [Resource constraints and job management](./advanced/resources.md)
 
 - [Section 6 - A Reference Guide for Snakemake Features](./section_6.md)
   - [Wildcard constraints](reference/wildcard-constraints.md)

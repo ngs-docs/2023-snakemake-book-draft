@@ -1,0 +1,13 @@
+configfile: "config.multi_samples.yml"
+
+SAMPLES=config['samples']
+
+rule all:
+    input:
+        expand("one_sample.{s}.out", s=SAMPLES)
+
+rule make_single_sample_wc:
+    output:
+        "one_sample.{s}.out"
+    shell:
+        "touch {output}"

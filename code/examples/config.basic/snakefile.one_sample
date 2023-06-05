@@ -1,0 +1,9 @@
+configfile: "config.one_sample.yml"
+
+SAMPLE=config['sample']
+
+rule all:
+    output:
+        expand("one_sample.{s}.out", s=SAMPLE)
+    shell:
+        "touch {output}"

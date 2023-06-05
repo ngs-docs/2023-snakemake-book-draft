@@ -1,0 +1,8 @@
+# expect_fail
+
+rule example:
+    output:
+       "file-does-not-exist"
+    shell: """
+       touch file-does-not-exist-typo
+    """   

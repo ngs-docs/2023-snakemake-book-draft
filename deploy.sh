@@ -1,4 +1,6 @@
 #! /bin/bash
+set -e
+set -x
 
 # create a temp directory & build book into it
 tmpdir=$(mktemp -d /tmp/bookXXX)
@@ -6,7 +8,7 @@ mdbook build -d ${tmpdir}
 echo "build directory is: ${tmpdir}"
 
 # go to temp directory
-cd ${tmpdir}/html/
+cd ${tmpdir}
 
 # indicate that GitHub should not interpret this as a Jekyll site, i.e.
 # it's a static site.

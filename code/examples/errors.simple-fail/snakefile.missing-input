@@ -1,0 +1,5 @@
+# expect_fail
+
+rule example:
+    input:
+        "file-does-not-exist"
