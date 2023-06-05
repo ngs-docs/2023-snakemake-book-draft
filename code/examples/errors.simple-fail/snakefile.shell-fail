@@ -1,0 +1,6 @@
+# expect_fail
+
+rule hello_fail:
+    shell: """
+        ls file-does-not-exist
+    """
